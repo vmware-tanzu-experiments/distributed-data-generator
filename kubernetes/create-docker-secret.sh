@@ -1,0 +1,3 @@
+kubectl create secret docker-registry regcred1 --docker-server=http://index.docker.io/v1/ --docker-username=dsmithuchida --docker-password=dPrMq3Fg8czCn --docker-email=dave@igeekinc.com --namespace=kibishii
+
+kubectl create secret docker-registry regcred --docker-server=http://index.docker.io/v1/ --docker-username=6002 --docker-password=ujwalahalambi --docker-email=ujwalahalambi@gmail.com --namespace=kibishii

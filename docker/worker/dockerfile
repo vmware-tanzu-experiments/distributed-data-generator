@@ -1,0 +1,6 @@
+FROM openjdk:8
+RUN mkdir -p /opt/share/kibishii
+COPY opt/share/kibishii /opt/share/kibishii
+RUN chmod +x /opt/share/kibishii/bin/kibishii.sh
+RUN mkdir /data
+CMD /opt/share/kibishii/bin/kibishii.sh

@@ -1,0 +1,32 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: kibishii-deployment
+spec:
+  serviceName: "kibishii"
+  selector:
+    matchLabels:
+      app: kibishii
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: kibishii
+    spec:
+      containers:
+      - name: kibishii
+        image: dpcpinternal/kibishii-worker:main-5b7a112-06.Nov.2020.18.09.55
+        volumeMounts:
+        - name: kibishii-data
+          mountPath: /data
+      imagePullSecrets:
+      - name: regcred1
+  volumeClaimTemplates:
+  - metadata:
+      name: kibishii-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "kibishii-storage-class"
+      resources:
+        requests:
+          storage: 1Gi
