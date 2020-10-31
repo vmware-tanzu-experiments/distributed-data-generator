@@ -1,0 +1,11 @@
+FROM centos:7
+RUN yum update -y
+RUN yum install -y etcd
+RUN yum install -y bind-utils
+RUN yum install -y epel-release
+RUN yum install -y jq
+RUN mkdir -p /usr/local/bin
+COPY usr/local/bin /usr/local/bin
+RUN chmod +x /usr/local/bin/*
+CMD /bin/bash -c -- "while true; do sleep 30; done;" 
+

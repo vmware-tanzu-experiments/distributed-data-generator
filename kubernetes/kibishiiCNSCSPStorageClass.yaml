@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: kibishii-storage-class
+parameters:
+  datastore: vsanDatastore
+  storagePolicyName: vSAN Default Storage Policy
+provisioner: kubernetes.io/vsphere-volume
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+
