@@ -19,8 +19,6 @@ spec:
         volumeMounts:
         - name: kibishii-data
           mountPath: /data
-      imagePullSecrets:
-      - name: regcred1
   volumeClaimTemplates:
   - metadata:
       name: kibishii-data
