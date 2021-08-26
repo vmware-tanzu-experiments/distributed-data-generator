@@ -30,6 +30,19 @@ fi
 echo $STATUS
 if [ "$STATUS" = 'success' ]
 then
+    nodes=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379 | grep ^kibishii-deployment`
+    for i in $nodes
+    do
+         results=`etcdctl get /kibishii/results/1629946987/$i --endpoints=http://etcd-client:2379 --print-value-only | jq ".missingFiles"`
+         echo "node [$i] results: $results"
+         if [ "$results" !=  '0' ]; then
+             echo "exit -1"
+             exit 2
+         fi
+    done
 	exit 0
 fi
+
 exit 1
+
+
