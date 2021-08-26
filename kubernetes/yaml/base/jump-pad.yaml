@@ -5,4 +5,4 @@ metadata:
 spec:
   containers:
   - name: jump-pad
-    image: harbor-repo.vmware.com/harbor-ci/dpcpinternal/jump-pad:test-pv
+    image: danfengliu/jump-pad:test-pv
