@@ -15,9 +15,8 @@
 
 # VERSION is <git branch>-<git commit>-<date
 # Uses ifndef instead of ?= so that date will only be evaluated once, not each time VERSION is used
-VERSION ?= test-pv
 ifndef VERSION
-#VERSION := $(shell echo `git rev-parse --abbrev-ref HEAD`-`git log -1 --pretty=format:%h`-`date "+%d.%b.%Y.%H.%M.%S"`)
+VERSION := $(shell echo `git rev-parse --abbrev-ref HEAD`-`git log -1 --pretty=format:%h`-`date "+%d.%b.%Y.%H.%M.%S"`)
 endif
 
 REGISTRY ?= dpcpinternal
