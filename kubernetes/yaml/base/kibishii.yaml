@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: kibishii
-        image: dpcpinternal/kibishii-worker:main-5b7a112-06.Nov.2020.18.09.55
+        image: dpcpinternal/kibishii-worker:main-d16defe-01.Sep.2021.23.47.21
         volumeMounts:
         - name: kibishii-data
           mountPath: /data
