@@ -5,4 +5,4 @@ metadata:
 spec:
   containers:
   - name: jump-pad
-    image: dpcpinternal/jump-pad:main-0839656-02.Nov.2020.22.56.55
+    image: dpcpinternal/jump-pad:main-d16defe-01.Sep.2021.23.47.21
