@@ -8,5 +8,5 @@ parameters:
   kind: Managed
   storageaccounttype: StandardSSD_LRS
 reclaimPolicy: Delete
-volumeBindingMode: Immediate
+volumeBindingMode: WaitForFirstConsumer
 
