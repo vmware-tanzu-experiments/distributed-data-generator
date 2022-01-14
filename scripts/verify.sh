@@ -26,6 +26,16 @@ do
     NODES_FAILED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesFailed" | sed -e 's/"//g'`
 done
 
+RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
+echo RESULT:$RESULT
+NODES=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
+echo NODES:$NODES
+CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
+echo CTL:$CTL
+OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only`
+echo OPS:$OPS
+echo END_ERR_STATUS:$STATUS
+
 if [ "$NODES_COMPLETED" != "$NODES" ]; then
 	STATUS="failed"
     echo STATUS:$STATUS
@@ -64,6 +74,14 @@ then
     echo END_STATUS:$STATUS
     exit 0
 fi
+RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
+echo RESULT:$RESULT
+NODES=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
+echo NODES:$NODES
+CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
+echo CTL:$CTL
+OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only`
+echo OPS:$OPS
 echo END_ERR_STATUS:$STATUS
 exit 1
 
