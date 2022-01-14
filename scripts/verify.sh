@@ -28,8 +28,8 @@ done
 
 RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
 echo RESULT:$RESULT
-NODES=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
-echo NODES:$NODES
+NODE_LIST=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
+echo NODE_LIST:$NODE_LIST
 CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
 echo CTL:$CTL
 OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only`
