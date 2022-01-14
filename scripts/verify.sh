@@ -22,20 +22,37 @@ do
 	sleep 10
 	STATUS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".status" | sed -e 's/"//g'`
 	NODES_COMPLETED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesCompleted" | sed -e 's/"//g'`
+    NODES_STARTING=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesStarting" | sed -e 's/"//g'`
+    NODES_FAILED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesFailed" | sed -e 's/"//g'`
 done
-if [ "$NODES_COMPLETED" -ne "$NODES" ] 
-then
+
+if [ "$NODES_COMPLETED" != "$NODES" ]; then
 	STATUS="failed"
+    echo STATUS:$STATUS
+    echo NODES_COMPLETED:$NODES_COMPLETED
+    exit 80
 fi
-echo $STATUS
+if [ "$NODES_STARTING" != "$NODES" ]; then
+	STATUS="failed"
+    echo STATUS:$STATUS
+    echo NODES_STARTING:$NODES_STARTING
+    exit 81
+fi
+if [ "$NODES_FAILED" != "" ]; then
+	STATUS="failed"
+    echo STATUS:$STATUS
+    echo NODES_FAILED:$NODES_FAILED
+    exit 82
+fi
+
 if [ "$STATUS" = 'success' ]
 then
     nodes=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379 | grep ^kibishii-deployment`
     for node in $nodes
     do
-         results=`etcdctl get /kibishii/results/$OPID/$node --endpoints=http://etcd-client:2379 --print-value-only | jq ".missingDirs,.missingFiles"`
-         for result in $results
-         do
+        results=`etcdctl get /kibishii/results/$OPID/$node --endpoints=http://etcd-client:2379 --print-value-only | jq ".missingDirs,.missingFiles"`
+        for result in $results
+        do
             if [ -z $result ]; then
                 exit 2
             fi
@@ -44,9 +61,11 @@ then
             fi
         done
     done
-	exit 0
+    echo END_STATUS:$STATUS
+    exit 0
 fi
-
+echo END_ERR_STATUS:$STATUS
 exit 1
+
 
 
