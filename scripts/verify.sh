@@ -18,7 +18,7 @@ done
 echo "{\"opID\":\"$OPID\",\"cmd\":\"verify\",\"levels\":\"$LEVELS\",\"dirsPerLevel\":\"$DIRSPERLEVEL\",\"filesPerLevel\":\"$FILESPERLEVEL\",\"fileLength\":\"$FILELENGTH\",\"blockSize\":\"$BLOCKSIZE\",\"passNum\":\"$PASSNUM\"}" | etcdctl put /kibishii/control --endpoints=http://etcd-client:2379
 STATUS="running"
 i=0
-while ( [ "$STATUS" = 'running' ] && [ $i -le 36 ] )
+while ( [ -n "$STATUS" ] && [ "$STATUS" = 'running' ] &&  [ $i -le 36 ] )
 do
     echo i:$i
 	sleep 10
@@ -88,8 +88,6 @@ OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print
 echo OPS:$OPS
 echo END_ERR_STATUS:$STATUS
 exit 1
-
-
 
 
 
