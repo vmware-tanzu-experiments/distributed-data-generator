@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: kibishii
-        image: harbor-repo.vmware.com/harbor-ci/kibishii-worker:fix-verify-issue-3c513e0-14.Jan.2022.12.22.53
+        image: harbor-repo.vmware.com/harbor-ci/kibishii-worker:verify-issue-3-0b96f98-17.Jan.2022.07.27.54
         volumeMounts:
         - name: kibishii-data
           mountPath: /data
