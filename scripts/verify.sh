@@ -17,24 +17,28 @@ done
 
 echo "{\"opID\":\"$OPID\",\"cmd\":\"verify\",\"levels\":\"$LEVELS\",\"dirsPerLevel\":\"$DIRSPERLEVEL\",\"filesPerLevel\":\"$FILESPERLEVEL\",\"fileLength\":\"$FILELENGTH\",\"blockSize\":\"$BLOCKSIZE\",\"passNum\":\"$PASSNUM\"}" | etcdctl put /kibishii/control --endpoints=http://etcd-client:2379
 STATUS="running"
-while [ "$STATUS" = 'running' ]
+i=0
+while ( [ "$STATUS" = 'running' ] && [ $i -le 36 ] )
 do
+    echo i:$i
 	sleep 10
 	STATUS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".status" | sed -e 's/"//g'`
 	NODES_COMPLETED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesCompleted" | sed -e 's/"//g'`
     NODES_STARTING=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesStarting" | sed -e 's/"//g'`
     NODES_FAILED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesFailed" | sed -e 's/"//g'`
+    RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
+    echo RESULT:$RESULT
+    NODE_LIST=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
+    echo NODE_LIST:$NODE_LIST
+    CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
+    echo CTL:$CTL
+    OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only`
+    echo OPS:$OPS
+    echo STATUS:$STATUS
+    ((i++))
+    date
 done
 
-RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
-echo RESULT:$RESULT
-NODE_LIST=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
-echo NODE_LIST:$NODE_LIST
-CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
-echo CTL:$CTL
-OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only`
-echo OPS:$OPS
-echo END_ERR_STATUS:$STATUS
 
 if [ "$NODES_COMPLETED" != "$NODES" ]; then
 	STATUS="failed"
@@ -84,6 +88,8 @@ OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print
 echo OPS:$OPS
 echo END_ERR_STATUS:$STATUS
 exit 1
+
+
 
 
 
