@@ -18,7 +18,7 @@ done
 echo "{\"opID\":\"$OPID\",\"cmd\":\"verify\",\"levels\":\"$LEVELS\",\"dirsPerLevel\":\"$DIRSPERLEVEL\",\"filesPerLevel\":\"$FILESPERLEVEL\",\"fileLength\":\"$FILELENGTH\",\"blockSize\":\"$BLOCKSIZE\",\"passNum\":\"$PASSNUM\"}" | etcdctl put /kibishii/control --endpoints=http://etcd-client:2379
 STATUS="running"
 i=0
-while ( [ -n "$STATUS" ] && [ "$STATUS" = 'running' ] &&  [ $i -le 36 ] )
+while ( [ -z "$STATUS" ] || [ "$STATUS" = 'running' ] ) &&  [ $i -le 36 ]
 do
     echo i:$i
 	sleep 10
@@ -28,6 +28,8 @@ do
     NODES_FAILED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesFailed" | sed -e 's/"//g'`
     RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
     echo RESULT:$RESULT
+    STATUS_KEY=`etcdctl get /kibishii/status/ --prefix --endpoints=http://etcd-client:2379`
+    echo STATUS_KEY:$STATUS_KEY
     NODE_LIST=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
     echo NODE_LIST:$NODE_LIST
     CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
@@ -80,6 +82,8 @@ then
 fi
 RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
 echo RESULT:$RESULT
+STATUS_KEY=`etcdctl get /kibishii/status/ --prefix --endpoints=http://etcd-client:2379`
+echo STATUS_KEY:$STATUS_KEY
 NODES=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
 echo NODES:$NODES
 CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
