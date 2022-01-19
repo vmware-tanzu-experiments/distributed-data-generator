@@ -15,10 +15,21 @@ do
 	RUNNING_NODES=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379 | grep /kibishii/nodes | wc -l`
 done
 
-echo "{\"opID\":\"$OPID\",\"cmd\":\"verify\",\"levels\":\"$LEVELS\",\"dirsPerLevel\":\"$DIRSPERLEVEL\",\"filesPerLevel\":\"$FILESPERLEVEL\",\"fileLength\":\"$FILELENGTH\",\"blockSize\":\"$BLOCKSIZE\",\"passNum\":\"$PASSNUM\"}" | etcdctl put /kibishii/control --endpoints=http://etcd-client:2379
-STATUS="running"
+j=0
+STATUS=""
+while [ -z "$STATUS" ] &&  [ $j -le 20 ]
+do
+    echo j:$j
+    echo "{\"opID\":\"$OPID\",\"cmd\":\"verify\",\"levels\":\"$LEVELS\",\"dirsPerLevel\":\"$DIRSPERLEVEL\",\"filesPerLevel\":\"$FILESPERLEVEL\",\"fileLength\":\"$FILELENGTH\",\"blockSize\":\"$BLOCKSIZE\",\"passNum\":\"$PASSNUM\"}" | etcdctl put /kibishii/control --endpoints=http://etcd-client:2379
+    sleep 10
+    STATUS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".status" | sed -e 's/"//g'`
+    echo STATUS_1:$STATUS
+    ((j++))
+done
+
 i=0
-while ( [ -z "$STATUS" ] || [ "$STATUS" = 'running' ] ) &&  [ $i -le 36 ]
+STATUS="running"
+while [ "$STATUS" = 'running' ] &&  [ $i -le 36 ]
 do
     echo i:$i
 	sleep 10
