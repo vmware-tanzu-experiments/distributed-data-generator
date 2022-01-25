@@ -11,18 +11,6 @@ spec:
   selector:
     app: etcd
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: etcd0-pv-claim
-spec:
-  storageClassName: kibishii-storage-class
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
 
 ---
 
@@ -52,9 +40,6 @@ spec:
     - --initial-cluster-state
     - new
     image: quay.io/coreos/etcd:latest
-    volumeMounts:
-       - mountPath: "/etcd0.etcd"
-         name: etcd0-storage
     name: etcd0
     ports:
     - containerPort: 2379
@@ -86,19 +71,6 @@ spec:
   selector:
     etcd_node: etcd0
 
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: etcd1-pv-claim
-spec:
-  storageClassName: kibishii-storage-class
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
 
 ---
 
@@ -128,9 +100,6 @@ spec:
     - --initial-cluster-state
     - new
     image: quay.io/coreos/etcd:latest
-    volumeMounts:
-       - mountPath: "/etcd1.etcd"
-         name: etcd1-storage
     name: etcd1
     ports:
     - containerPort: 2379
@@ -164,19 +133,7 @@ spec:
 
 ---
 
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: etcd2-pv-claim
-spec:
-  storageClassName: kibishii-storage-class
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
 
----
 
 apiVersion: v1
 kind: Pod
@@ -204,9 +161,6 @@ spec:
     - --initial-cluster-state
     - new
     image: quay.io/coreos/etcd:latest
-    volumeMounts:
-       - mountPath: "/etcd2.etcd"
-         name: etcd2-storage
     name: etcd2
     ports:
     - containerPort: 2379
