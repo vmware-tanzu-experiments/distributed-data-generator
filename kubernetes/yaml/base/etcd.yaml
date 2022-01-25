@@ -34,10 +34,6 @@ metadata:
     etcd_node: etcd0
   name: etcd0
 spec:
-  volumes:
-    - name: etcd0-storage
-      persistentVolumeClaim:
-       claimName: etcd0-pv-claim
   containers:
   - command:
     - /usr/local/bin/etcd
@@ -114,10 +110,6 @@ metadata:
     etcd_node: etcd1
   name: etcd1
 spec:
-  volumes:
-    - name: etcd1-storage
-      persistentVolumeClaim:
-       claimName: etcd1-pv-claim
   containers:
   - command:
     - /usr/local/bin/etcd
@@ -194,10 +186,6 @@ metadata:
     etcd_node: etcd2
   name: etcd2
 spec:
-  volumes:
-    - name: etcd2-storage
-      persistentVolumeClaim:
-       claimName: etcd2-pv-claim
   containers:
   - command:
     - /usr/local/bin/etcd
