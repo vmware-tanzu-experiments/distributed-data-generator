@@ -16,11 +16,6 @@
  
 package com.igeekinc.util.discburning.remote;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.CheckCorrectDispatchThread;
 import com.igeekinc.util.EventDeliverySupport;
 import com.igeekinc.util.EventHandler;
@@ -38,6 +33,10 @@ import com.igeekinc.util.discburning.DiscBurning;
 import com.igeekinc.util.logging.ErrorLogMessage;
 import com.igeekinc.util.pauseabort.AbortedException;
 import com.igeekinc.util.pauseabort.PauserControlleeIF;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import org.apache.logging.log4j.LogManager;
+
 
 /**
  * DiscBurningRemoteProxy wrappers a remote DiscBurning and also provides a local site for events
@@ -57,11 +56,13 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
         {
             this.listener = listener;
         }
+        @Override
         public void handleEvent(java.util.EventObject eventToHandle) 
         {
             listener.burnDeviceEvent((BurnDeviceEvent)eventToHandle);
         }
         
+        @Override
         public boolean equals(Object checkObject)
         {
             if (!(checkObject instanceof BurnDeviceEventListenerAdapter))
@@ -79,6 +80,7 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
         eventDeliveryImpl = new RemoteDiscBurningEventDeliveryImpl(this);
         remoteDiscBurning.setBurnDeviceEventDelivery(eventDeliveryImpl);
     }
+    @Override
     public BurnVolume createRecordableVolume(String volumeName,
             PauserControlleeIF pauser) throws IOException, AbortedException
     {
@@ -86,11 +88,13 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
         return null;
     }
 
+    @Override
     public void discardRecordableVolume(BurnVolume volumeToDiscard)
     {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public void burnVolume(BurnDevice burnDevice, BurnVolume volumeToBurn,
             BurnSetupProperties burnProperties, BurnProgressIndicator burnProgress,
             PauserControlleeIF pauser) throws BurnFailedException, AbortedException
@@ -98,6 +102,7 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
         // TODO Auto-generated method stub
     }
 
+    @Override
     public BurnDevice[] getBurningDevices()
     {
         try
@@ -111,11 +116,12 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
             return localProxies;
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught a remote exception getting burn devices"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught a remote exception getting burn devices"), e);
             return new BurnDevice[0];
         }
     }
 
+    @Override
     public void addBurnDeviceEventListener(BurnDeviceEventListener newListener)
     {
         deliverySupport.addEventHandler(BurnDeviceEvent.class, new BurnDeviceEventListenerAdapter(newListener));
@@ -123,6 +129,7 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
         deliverySupport.addEventHandler(BurnDeviceDisappeared.class, new BurnDeviceEventListenerAdapter(newListener));
     }
 
+    @Override
     public void removeBurnDeviceEventListener(
             BurnDeviceEventListener removeListener)
     {
@@ -133,10 +140,12 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
      * Called by RemoteDiscBurningEventDeliveryImpl to deliver an event from the remote DiscBurning
      * @param eventToDeliver
      */
+    @Override
     public void burnDeviceEvent(BurnDeviceEvent eventToDeliver)
     {
         deliverySupport.sendEvent(eventToDeliver);
     }
+    @Override
     public BurnDevice getBurnDeviceForID(BurnDeviceID deviceID)
     {
         try
@@ -145,10 +154,11 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
             return new BurnDeviceRemoteProxy(remoteBurnDeviceForID, checker);
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return null;
         }
     }
+    @Override
     public void close() throws IOException
     {
         try
@@ -156,7 +166,7 @@ public class DiscBurningRemoteProxy implements DiscBurning, BurnDeviceEventListe
             remoteDiscBurning.close();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }
     }
 }

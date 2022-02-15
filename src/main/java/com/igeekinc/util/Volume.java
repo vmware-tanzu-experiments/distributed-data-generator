@@ -18,13 +18,14 @@ package com.igeekinc.util;
 
 import java.io.IOException;
 import java.io.Serializable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
 public abstract class Volume implements Serializable
 {
 	static final long serialVersionUID =3694219538609533291L;
-	protected static Logger logger = Logger.getLogger(Volume.class);
+	protected static Logger logger = LogManager.getLogger(Volume.class);
 
 	/**
 	 * Gets a file with a path relative to the volume root
@@ -78,11 +79,13 @@ public abstract class Volume implements Serializable
 			return(false);
 	}
 	
+ @Override
 	public String toString()
 	{
 		return(getVolumeName());
 	}
 	
+ @Override
 	public boolean equals(Object checkObject)
 	{
 		if (checkObject.getClass().isAssignableFrom(Volume.class))

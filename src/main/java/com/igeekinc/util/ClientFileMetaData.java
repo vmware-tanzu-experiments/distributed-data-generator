@@ -16,12 +16,12 @@
  
 package com.igeekinc.util;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import com.igeekinc.util.exceptions.ForkNotFoundException;
 import com.igeekinc.util.exceptions.UserNotFoundException;
 import com.igeekinc.util.msgpack.ClientFileMetaDataMsgPack;
+import java.io.Serializable;
+import java.util.Date;
+
 
 public abstract class ClientFileMetaData implements Cloneable, Serializable
 {
@@ -54,13 +54,14 @@ public abstract class ClientFileMetaData implements Cloneable, Serializable
     public abstract void setFileType(int fileType);
     public abstract boolean isDirectory();
     
+    @Override
     public ClientFileMetaData clone()
     {
         try {
             return (ClientFileMetaData)super.clone();
         } catch (CloneNotSupportedException e) {
             //TODO Auto-generated catch block
-            org.apache.log4j.Logger exceptionLogger = org.apache.log4j.Logger.getLogger(this.getClass());
+            org.apache.logging.log4j.Logger exceptionLogger = org.apache.logging.log4j.LogManager.getLogger(this.getClass());
             exceptionLogger.error("Caught exception CloneNotSupportedException", e);
             return null;
         }

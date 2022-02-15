@@ -16,18 +16,18 @@
  
 package com.igeekinc.util;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.logging.WarnLogMessage;
 import com.igeekinc.util.pauseabort.AbortedException;
 import com.igeekinc.util.pauseabort.PauserControlleeIF;
 import com.igeekinc.util.rules.Rule;
 import com.igeekinc.util.rules.RuleMatch;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import org.apache.logging.log4j.Logger;
+
+
 
 public abstract class FSTraverser
 {

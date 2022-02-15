@@ -16,12 +16,6 @@
  
 package com.igeekinc.util.discburning.remote;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.discburning.BurnDevice;
 import com.igeekinc.util.discburning.BurnDeviceEvent;
 import com.igeekinc.util.discburning.BurnDeviceEventListener;
@@ -33,8 +27,13 @@ import com.igeekinc.util.discburning.DiscBurning;
 import com.igeekinc.util.logging.ErrorLogMessage;
 import com.igeekinc.util.pauseabort.AbortedException;
 import com.igeekinc.util.pauseabort.PauserControlleeIF;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import org.apache.logging.log4j.LogManager;
 
-public class RemoteDiscBurningImpl extends UnicastRemoteObject implements RemoteDiscBurning, BurnDeviceEventListener
+
+
+public class RemoteDiscBurningImpl extends java.rmi.server.UnicastRemoteObject implements RemoteDiscBurning, BurnDeviceEventListener
 {
     
     /**
@@ -51,18 +50,21 @@ public class RemoteDiscBurningImpl extends UnicastRemoteObject implements Remote
         this.localDiscBurning.addBurnDeviceEventListener(this);
     }
     
+    @Override
     public BurnVolume createRecordableVolume(String volumeName,
             PauserControlleeIF pauser) throws IOException, AbortedException, RemoteException
     {
         return localDiscBurning.createRecordableVolume(volumeName, pauser);
     }
 
+    @Override
     public void discardRecordableVolume(BurnVolume volumeToDiscard)
     throws RemoteException, IOException
     {
         localDiscBurning.discardRecordableVolume(volumeToDiscard);
     }
 
+    @Override
     public void burnVolume(BurnDevice burnDevice, BurnVolume volumeToBurn,
             BurnSetupProperties burnProperties, BurnProgressIndicator burnProgress,
             PauserControlleeIF pauser) throws IOException, AbortedException, RemoteException
@@ -70,6 +72,7 @@ public class RemoteDiscBurningImpl extends UnicastRemoteObject implements Remote
         localDiscBurning.burnVolume(burnDevice, volumeToBurn, burnProperties, burnProgress, pauser);
     }
 
+    @Override
     public RemoteBurnDevice[] getBurningDevices() throws RemoteException
     {
         BurnDevice [] localDevices = localDiscBurning.getBurningDevices();
@@ -81,6 +84,7 @@ public class RemoteDiscBurningImpl extends UnicastRemoteObject implements Remote
         return remoteDevices;
     }
 
+    @Override
     public void burnDeviceEvent(BurnDeviceEvent firedEvent)
     {
         if (eventDelivery != null)
@@ -89,15 +93,17 @@ public class RemoteDiscBurningImpl extends UnicastRemoteObject implements Remote
                 eventDelivery.burnDeviceEvent(firedEvent);
             } catch (RemoteException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught remote exception delivering BurnDeviceEvent"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught remote exception delivering BurnDeviceEvent"), e);
             }
     }
 
+    @Override
     public void setBurnDeviceEventDelivery(RemoteDiscBurningEventDelivery deliveryObject) throws RemoteException
     {
         eventDelivery = deliveryObject;
     }
 
+    @Override
     public RemoteBurnDevice getBurnDeviceForID(BurnDeviceID deviceID) throws RemoteException
     {
         BurnDevice deviceForID = localDiscBurning.getBurnDeviceForID(deviceID);
@@ -107,6 +113,7 @@ public class RemoteDiscBurningImpl extends UnicastRemoteObject implements Remote
         return returnDevice;
     }
 
+    @Override
     public void close() throws IOException, RemoteException
     {
         localDiscBurning.close();

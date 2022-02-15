@@ -16,15 +16,16 @@
  
 package com.igeekinc.util;
 
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 class SampleBucket
 {
@@ -109,7 +110,7 @@ public class FileCopyCompletionEstimator
         lastCopyUpdateTime = -1;
         estimatedCompletionTime = -1;
         
-        logger=Logger.getLogger(getClass());
+        logger=LogManager.getLogger(getClass());
         samples = new LinkedList<SampleBucket>();
         if (generateLogFile)
         {
@@ -118,7 +119,7 @@ public class FileCopyCompletionEstimator
                 logFileOutput = new PrintWriter(new FileOutputStream(new File("/tmp/fcce.log")), true);
             } catch (FileNotFoundException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             }
         }
     }
