@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: kibishii
-        image: dpcpinternal/kibishii-worker:main-d16defe-01.Sep.2021.23.47.21
+        image: harbor-repo.vmware.com/harbor-ci/kibishii-worker:main-db45f74-19.Jan.2022.08.07.46
         volumeMounts:
         - name: kibishii-data
           mountPath: /data

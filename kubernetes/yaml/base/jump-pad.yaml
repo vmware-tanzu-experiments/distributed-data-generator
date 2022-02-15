@@ -5,4 +5,4 @@ metadata:
 spec:
   containers:
   - name: jump-pad
-    image: dpcpinternal/jump-pad:main-d16defe-01.Sep.2021.23.47.21
+    image: harbor-repo.vmware.com/harbor-ci/jump-pad:main-db45f74-19.Jan.2022.08.07.46
