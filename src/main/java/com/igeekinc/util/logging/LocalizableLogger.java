@@ -36,11 +36,6 @@ public class LocalizableLogger
 	{
 		logger.info(message);
 	}
-	//StatusLogMessage
-	public void status(InfoLogMessage message)
-	{
-		//logger.status(message);
-	}
 	public void warn(WarnLogMessage message)
 	{
 		logger.warn(message);

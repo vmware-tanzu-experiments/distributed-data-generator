@@ -16,20 +16,20 @@
  
 package com.igeekinc.util.datadescriptor;
 
+import com.igeekinc.util.ClientFile;
+import com.igeekinc.util.ForkChannel;
+import com.igeekinc.util.async.AsyncCompletion;
+import com.igeekinc.util.exceptions.ForkNotFoundException;
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.ClientFile;
-import com.igeekinc.util.ForkChannel;
-import com.igeekinc.util.async.AsyncCompletion;
-import com.igeekinc.util.exceptions.ForkNotFoundException;
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 public class FileDataDescriptor implements DataDescriptor
 {
@@ -87,6 +87,7 @@ public class FileDataDescriptor implements DataDescriptor
 		return returnBuffer;
     }
     
+    @Override
     public synchronized int getData(byte[] destination, int destOffset, long srcOffset,
             int length, boolean release) throws IOException, ForkNotFoundException
     {
@@ -138,26 +139,31 @@ public class FileDataDescriptor implements DataDescriptor
 		}
 	}
 
+ @Override
 	public InputStream getInputStream() throws IOException
     {
         return new DataDescriptorInputStream(this);
     }
 
+    @Override
     public long getLength()
     {
         return descriptorLength;
     }
 
+    @Override
     public void writeData(OutputStream destinationStream) throws IOException
     {
     	throw new UnsupportedOperationException();
     }
     
+    @Override
     public void writeData(FileOutputStream destinationStream) throws IOException
     {
     	throw new UnsupportedOperationException();
     }
     
+    @Override
     public boolean isAccessible()
     {
         try
@@ -168,26 +174,30 @@ public class FileDataDescriptor implements DataDescriptor
                 return true;
         } catch (IOException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }
         return false;
     }
 
+    @Override
     public boolean isShareableWithLocalProcess()
     {
         return true;    // We can serialize and send this somewhere else
     }
 
+    @Override
     public boolean isShareableWithRemoteProcess()
     {
         return false;    // This can't be used on a remote host
     }
 
+    @Override
     public boolean descriptorContainsData()
     {
         return false;
     }
     
+    @Override
     public void close() throws IOException
     {
         if (fileChannel != null)

@@ -16,7 +16,7 @@
  
 package com.igeekinc.util.pauseabort;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 public class PauseAbort implements PauserControllerIF, PauserControlleeIF
 {
@@ -29,6 +29,7 @@ public class PauseAbort implements PauserControllerIF, PauserControlleeIF
     {
         logger = inLogger;
     }
+    @Override
     public synchronized void checkPauseAndAbort()
     throws AbortedException
     {
@@ -62,6 +63,7 @@ public class PauseAbort implements PauserControllerIF, PauserControlleeIF
         return;
     }
     
+    @Override
     public synchronized void checkAbort() throws AbortedException
     {
         if (abort)
@@ -71,6 +73,7 @@ public class PauseAbort implements PauserControllerIF, PauserControlleeIF
             throw new AbortedException();
         }
     }
+    @Override
     public synchronized void pause()
     {
         pause = true;
@@ -78,6 +81,7 @@ public class PauseAbort implements PauserControllerIF, PauserControlleeIF
             subPauser.pause();
     }
 
+    @Override
     public synchronized void resume()
     {
         pause=false;
@@ -86,6 +90,7 @@ public class PauseAbort implements PauserControllerIF, PauserControlleeIF
         notifyAll();
     }
 
+    @Override
     public synchronized void abort(AbortReason inAbortReason)
     {
         abort=true;

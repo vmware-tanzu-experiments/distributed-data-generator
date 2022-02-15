@@ -16,14 +16,14 @@
  
 package com.igeekinc.util;
 
-import java.util.Date;
-import java.util.Vector;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.logging.ErrorLogMessage;
 import com.igeekinc.util.powermanagement.PowerManagementEvent;
 import com.igeekinc.util.powermanagement.PowerManagementListener;
+import java.util.Date;
+import java.util.Vector;
+import org.apache.logging.log4j.LogManager;
+
+
 
 public abstract class PowerManager
 {
@@ -66,7 +66,7 @@ public abstract class PowerManager
 					if (!target.powerManagementChange(evt))
 						allowChange = false;
 				} catch (Throwable e) {
-					Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught error sending power management event"), e);
+					LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught error sending power management event"), e);
 				}
 			}
 		}

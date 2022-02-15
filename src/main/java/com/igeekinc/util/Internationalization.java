@@ -15,15 +15,15 @@
  */
 package com.igeekinc.util;
 
+import com.igeekinc.util.logging.ErrorLogMessage;
 import gnu.gettext.GettextResource;
-
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.logging.ErrorLogMessage;
+
 
 public class Internationalization
 {
@@ -35,7 +35,7 @@ public class Internationalization
 			myResources= ResourceBundle.getBundle("com.igeekinc.util.localizable"); //$NON-NLS-1$
 		} catch (Exception e)
 		{
-			Logger.getLogger(Internationalization.class).error(new ErrorLogMessage("Caught exception"), e); //$NON-NLS-1$
+			LogManager.getLogger(Internationalization.class).error(new ErrorLogMessage("Caught exception"), e); //$NON-NLS-1$
 			// Create an empty resource bundle - we'll just use the English messages in the source
 			myResources = new ResourceBundle()
 			{

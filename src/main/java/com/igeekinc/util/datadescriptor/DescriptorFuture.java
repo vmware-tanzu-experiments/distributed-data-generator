@@ -16,14 +16,14 @@
  
 package com.igeekinc.util.datadescriptor;
 
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 public class DescriptorFuture implements Future<Integer>
 {
@@ -64,7 +64,7 @@ public class DescriptorFuture implements Future<Integer>
 		} catch (TimeoutException e)
 		{
 			// Should never get here
-			Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 			return 0;
 		}
 	}
