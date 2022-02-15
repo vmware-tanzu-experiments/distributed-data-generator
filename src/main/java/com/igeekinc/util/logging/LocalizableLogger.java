@@ -15,14 +15,14 @@
  */
  
 package com.igeekinc.util.logging;
-
+import org.apache.logging.log4j.Logger;
 public class LocalizableLogger
 {
-	iGeekLogger logger;
+	Logger logger;
 	/**
 	 * 
 	 */
-	public LocalizableLogger(iGeekLogger inLogger)
+	public LocalizableLogger(Logger inLogger)
 	{
 		logger = inLogger;
 	}
@@ -36,10 +36,10 @@ public class LocalizableLogger
 	{
 		logger.info(message);
 	}
-	
-	public void status(StatusLogMessage message)
+	//StatusLogMessage
+	public void status(InfoLogMessage message)
 	{
-		logger.status(message);
+		//logger.status(message);
 	}
 	public void warn(WarnLogMessage message)
 	{

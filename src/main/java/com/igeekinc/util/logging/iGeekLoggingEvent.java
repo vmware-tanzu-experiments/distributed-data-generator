@@ -16,30 +16,3 @@
  
 package com.igeekinc.util.logging;
 
-import java.io.Serializable;
-
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
-import org.apache.log4j.spi.LoggingEvent;
-
-public class iGeekLoggingEvent extends LoggingEvent implements Serializable
-{
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 2070086288901677962L;
-public LogMessage indelibleMessage;
-  public iGeekLoggingEvent(String fqnOfCategoryClass, Category logger,
-                      long timeStamp, Priority priority, LogMessage message,
-		      Throwable throwable)
-  {
-    super(fqnOfCategoryClass, logger, timeStamp, priority, message, throwable);
-    indelibleMessage = message;
-  }
-  public iGeekLoggingEvent(String fqnOfCategoryClass, Category logger,
-		      Priority priority, LogMessage message, Throwable throwable)
-  {
-    super(fqnOfCategoryClass, logger, priority, message, throwable);
-    indelibleMessage = message;
-  }
-}
