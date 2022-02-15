@@ -16,13 +16,14 @@
  
 package com.igeekinc.util.scripting;
 
-import java.io.IOException;
-import java.util.Properties;
-
 import com.igeekinc.util.User;
-import com.igeekinc.util.logging.iGeekLogger;
 import com.igeekinc.util.pauseabort.AbortedException;
 import com.igeekinc.util.pauseabort.PauserControlleeIF;
+import java.io.IOException;
+import java.util.Properties;
+import org.apache.logging.log4j.Logger;
+
+//import com.igeekinc.util.logging.iGeekLogger;
 
 public abstract class ScriptExecutor
 {
@@ -38,7 +39,7 @@ public abstract class ScriptExecutor
      * @return
      * @throws IOException
      */
-    public abstract int executeScript(Script scriptToExecute, String [] arguments, Properties environment, User executeAsUser, iGeekLogger logger, PauserControlleeIF pauser)
+    public abstract int executeScript(Script scriptToExecute, String [] arguments, Properties environment, User executeAsUser, Logger logger, PauserControlleeIF pauser)
     throws IOException, AbortedException;
     
     /**

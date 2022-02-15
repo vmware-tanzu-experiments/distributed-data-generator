@@ -16,11 +16,11 @@
  
 package com.igeekinc.util;
 
-import java.io.Serializable;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.logging.ErrorLogMessage;
+import java.io.Serializable;
+import org.apache.logging.log4j.LogManager;
+
+
 
 
 public class ObjectQueue<T>
@@ -65,7 +65,7 @@ public class ObjectQueue<T>
                 {
                     buffersDropped = true;  // Drop this block
                     objects.notifyAll();
-                    Logger.getLogger(getClass()).error(new ErrorLogMessage("Object queue dropping objects.  buffersQueued = {0}, maxObjects = {1}",
+                    LogManager.getLogger(getClass()).error(new ErrorLogMessage("Object queue dropping objects.  buffersQueued = {0}, maxObjects = {1}",
                             new Serializable[]{(Integer)buffersQueued, (Integer)maxObjects}));
                     return;
                 }
