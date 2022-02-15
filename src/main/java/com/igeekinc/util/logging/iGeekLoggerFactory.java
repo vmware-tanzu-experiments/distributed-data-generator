@@ -16,17 +16,3 @@
  
 package com.igeekinc.util.logging;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
-
-public class iGeekLoggerFactory implements LoggerFactory
-{
-
-  public iGeekLoggerFactory()
-  {
-  }
-  public Logger makeNewLoggerInstance(String name)
-  {
-    return new iGeekLogger(name);
-  }
-}

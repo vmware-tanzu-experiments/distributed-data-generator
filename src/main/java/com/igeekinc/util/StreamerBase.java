@@ -16,13 +16,13 @@
  
 package com.igeekinc.util;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.logging.ErrorLogMessage;
 import com.igeekinc.util.pauseabort.AbortedException;
 import com.igeekinc.util.pauseabort.PauseAbort;
+import java.util.concurrent.LinkedBlockingQueue;
+import org.apache.logging.log4j.Logger;
+
+
 
 public abstract class StreamerBase<ExecutionInfoType, ExecutionCompletionType> implements Runnable
 {
@@ -77,6 +77,7 @@ public abstract class StreamerBase<ExecutionInfoType, ExecutionCompletionType> i
         }
     }
 
+    @Override
     public void run()
     {
         ExecutionInfoType executionInfo;

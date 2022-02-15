@@ -19,8 +19,9 @@ package com.igeekinc.util.objectcache;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
 /**
  * ObjectCacheClearHandler p0olls the reference queues for all of the
@@ -40,7 +41,7 @@ public class ObjectCacheClearHandler implements Runnable
     private ObjectCacheClearHandler()
     {
         caches = new ArrayList<WeakReference<ObjectCache<?, ?>>>();
-        logger = Logger.getLogger(getClass());
+        logger = LogManager.getLogger(getClass());
         queueClearThread = new Thread(this, "ObjectCache clear thread");
         queueClearThread.setDaemon(true);
         queueClearThread.start();
@@ -67,6 +68,7 @@ public class ObjectCacheClearHandler implements Runnable
     	}
     }
     
+    @Override
     public void run()
     {
         boolean shouldSleep = false;

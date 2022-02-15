@@ -41,13 +41,15 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicLong;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+
 
 
 public class DirectMemoryUtils {
 
-	private static final Logger logger = Logger.getLogger(DirectMemoryUtils.class);
+	private static final Logger logger = LogManager.getLogger(DirectMemoryUtils.class);
 	private static final String MAX_DIRECT_MEMORY_PARAM ="-XX:MaxDirectMemorySize=";
 	private static final AtomicLong allocated = new AtomicLong(0);
 
