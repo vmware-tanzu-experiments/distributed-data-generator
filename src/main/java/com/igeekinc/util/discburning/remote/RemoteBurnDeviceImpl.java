@@ -16,14 +16,6 @@
  
 package com.igeekinc.util.discburning.remote;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.RMIServerSocketFactory;
-import java.rmi.server.UnicastRemoteObject;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.discburning.BurnDevice;
 import com.igeekinc.util.discburning.BurnDeviceID;
 import com.igeekinc.util.discburning.BurnDeviceStatusChanged;
@@ -34,8 +26,15 @@ import com.igeekinc.util.discburning.MediaStatus;
 import com.igeekinc.util.discburning.MediaType;
 import com.igeekinc.util.exceptions.DeadListenerError;
 import com.igeekinc.util.logging.DebugLogMessage;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
+import org.apache.logging.log4j.LogManager;
 
-public class RemoteBurnDeviceImpl extends UnicastRemoteObject implements
+
+
+public class RemoteBurnDeviceImpl extends java.rmi.server.UnicastRemoteObject implements
         RemoteBurnDevice, BurnDeviceStatusChangedListener
 {
     private static final long serialVersionUID = 6126976733458698461L;
@@ -64,41 +63,49 @@ public class RemoteBurnDeviceImpl extends UnicastRemoteObject implements
         localDevice.addStatusChangedListener(this);
     }
 
+    @Override
     public String getName() throws RemoteException
     {
         return localDevice.getName();
     }
 
+    @Override
     public BurnState getBurnState() throws RemoteException
     {
         return localDevice.getBurnState();
     }
 
+    @Override
     public void openTray() throws IOException
     {
         localDevice.openTray();
     }
 
+    @Override
     public void closeTray() throws IOException
     {
         localDevice.closeTray();
     }
 
+    @Override
     public void ejectMedia() throws IOException
     {
         localDevice.ejectMedia();
     }
 
+    @Override
     public long getAvailableSpace() throws RemoteException
     {
         return localDevice.getAvailableSpace();
     }
 
+    @Override
     public void setEventDelivery(RemoteDiscBurningEventDelivery eventDelivery)
     {
         this.eventDelivery = eventDelivery;
     }
 
+    @Override
     public void burnDeviceStatusChanged(BurnDeviceStatusChanged event)
     {
         if (eventDelivery != null)
@@ -109,77 +116,91 @@ public class RemoteBurnDeviceImpl extends UnicastRemoteObject implements
             } catch (RemoteException e)
             {
                 eventDelivery = null;
-                Logger.getLogger(getClass()).debug(new DebugLogMessage("Caught exception delivering event, removing remote eventDelivery"), e);
+                LogManager.getLogger(getClass()).debug(new DebugLogMessage("Caught exception delivering event, removing remote eventDelivery"), e);
                 throw new DeadListenerError("Remote listener not responding", e);
             }
         }
     }
 
+    @Override
     public BurnDeviceID getID() throws RemoteException
     {
         return localDevice.getID();
     }
 
+    @Override
     public MediaState getMediaState() throws RemoteException
     {
         return localDevice.getMediaState();
     }
 
+    @Override
     public MediaStatus getMediaStatus() throws RemoteException
     {
         return localDevice.getMediaStatus();
     }
 
+    @Override
     public MediaType getMediaType() throws RemoteException
     {
         return localDevice.getMediaType();
     }
 
+    @Override
     public double[] getAvailableSpeeds() throws RemoteException
     {
         return localDevice.getAvailableSpeeds();
     }
 
+    @Override
     public boolean acquireExclusiveAccess() throws IOException
     {
         return localDevice.acquireExclusiveAccess();
     }
     
+    @Override
     public boolean isAccessExclusive() throws RemoteException
     {
         return localDevice.isAccessExclusive();
     }
 
+    @Override
     public void askForMediaReservation() throws IOException
     {
         localDevice.askForMediaReservation();
     }
 
+    @Override
     public boolean isMediaReserved() throws RemoteException
     {
         return localDevice.isMediaReserved();
     }
 
+    @Override
     public void releaseMediaReservation() throws IOException
     {
         localDevice.releaseMediaReservation();
     }
     
+    @Override
     public void releaseExclusiveAccess() throws IOException
     {
         localDevice.releaseExclusiveAccess();
     }
 
+    @Override
     public boolean canTrayOpen() throws RemoteException
     {
         return localDevice.canTrayOpen();
     }
 
+    @Override
     public boolean isTrayOpen() throws RemoteException
     {
         return localDevice.isTrayOpen();
     }
 
+    @Override
     public MediaType[] getSupportedMedia() throws RemoteException
     {
         return localDevice.getSupportedMedia();

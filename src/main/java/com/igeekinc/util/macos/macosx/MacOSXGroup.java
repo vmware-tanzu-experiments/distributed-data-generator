@@ -16,17 +16,17 @@
  
 package com.igeekinc.util.macos.macosx;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.Group;
 import com.igeekinc.util.SystemInfo;
 import com.igeekinc.util.User;
 import com.igeekinc.util.exceptions.UserNotFoundException;
 import com.igeekinc.util.logging.ErrorLogMessage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import org.apache.logging.log4j.LogManager;
+
+
 
 public class MacOSXGroup extends Group
 {
@@ -58,7 +58,7 @@ public class MacOSXGroup extends Group
                 curUser = SystemInfo.getSystemInfo().getUserInfoForName(curMember);
             } catch (UserNotFoundException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             }
             if (curUser != null)
                 usersList.add(curUser);

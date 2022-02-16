@@ -16,13 +16,13 @@
  
 package com.igeekinc.util;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.pauseabort.AbortedException;
 import com.igeekinc.util.pauseabort.PauserControlleeIF;
+import java.io.File;
+import java.io.IOException;
+import org.apache.logging.log4j.Logger;
+
+
 
 public class FileTreeRemover extends FSTraverser
 {
@@ -33,6 +33,7 @@ public class FileTreeRemover extends FSTraverser
         shouldntChangeTooMuch = false;
     }
 
+    @Override
     public void preprocessDirectory(FileLike curDirectory,
             PauserControlleeIF pauser) throws AbortedException, IOException
     {
@@ -40,6 +41,7 @@ public class FileTreeRemover extends FSTraverser
 
     }
 
+    @Override
     public void handleFile(FileLike curFile, PauserControlleeIF pauser)
             throws AbortedException, IOException
     {
@@ -48,6 +50,7 @@ public class FileTreeRemover extends FSTraverser
             throw new IOException("Could not delete file "+curFile.getAbsolutePath());
     }
 
+    @Override
     public void postprocessDirectory(FileLike curDirectory,
             PauserControlleeIF pauser) throws AbortedException, IOException
     {
@@ -55,6 +58,7 @@ public class FileTreeRemover extends FSTraverser
             throw new IOException("Could not delete file "+curDirectory.getAbsolutePath());
     }
 
+    @Override
     public void handleMountPoint(FileLike mountPoint, PauserControlleeIF pauser)
             throws AbortedException, IOException
     {

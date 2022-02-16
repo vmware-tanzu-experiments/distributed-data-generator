@@ -16,19 +16,19 @@
  
 package com.igeekinc.util;
 
+import com.igeekinc.util.datadescriptor.DataDescriptor;
+import com.igeekinc.util.datadescriptor.FileDataDescriptor;
+import com.igeekinc.util.exceptions.ForkNotFoundException;
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.datadescriptor.DataDescriptor;
-import com.igeekinc.util.datadescriptor.FileDataDescriptor;
-import com.igeekinc.util.exceptions.ForkNotFoundException;
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 /**
  * A FilePackage encapsulates all of the info about a file except for its path/name.
@@ -59,10 +59,10 @@ public class FilePackage implements Serializable
 	    	fileConstructor = filePackageClass.getConstructor(fileArgs);
         } catch (SecurityException e)
 	    {
-        	Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+        	LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 	    } catch (NoSuchMethodException e)
 	    {
-	    	Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+	    	LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 	    }     //$NON-NLS-1$
 	}
 	
@@ -80,16 +80,16 @@ public class FilePackage implements Serializable
 			return (FilePackage) partsConstructor.newInstance(args);
 		} catch (IllegalArgumentException e)
 		{
-			Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (InstantiationException e)
 		{
-			Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (IllegalAccessException e)
 		{
-			Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (InvocationTargetException e)
 		{
-			Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 		}
 		throw new InternalError("Could not allocate FilePackage for "+filePath);
 	}
@@ -104,13 +104,13 @@ public class FilePackage implements Serializable
 			return (FilePackage) fileConstructor.newInstance(args);
 		} catch (IllegalArgumentException e)
 		{
-			Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (InstantiationException e)
 		{
-			Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (IllegalAccessException e)
 		{
-			Logger.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(FilePackage.class).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (InvocationTargetException e)
 		{
 			if (e.getCause() instanceof IOException)
@@ -211,6 +211,7 @@ public class FilePackage implements Serializable
 		return filePath;
 	}
 	
+ @Override
 	public String toString()
 	{
 		return filePath.toString();

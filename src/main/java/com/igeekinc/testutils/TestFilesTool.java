@@ -15,6 +15,15 @@
  */
 package com.igeekinc.testutils;
 
+import com.igeekinc.util.BitTwiddle;
+import com.igeekinc.util.ClientFile;
+import com.igeekinc.util.ClientFileMetaData;
+import com.igeekinc.util.FileCopyProgressIndicator;
+import com.igeekinc.util.SHA1HashID;
+import com.igeekinc.util.SystemInfo;
+import com.igeekinc.util.logging.ErrorLogMessage;
+import com.igeekinc.util.pauseabort.AbortedException;
+import com.igeekinc.util.pauseabort.PauseAbort;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,18 +38,10 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.BitTwiddle;
-import com.igeekinc.util.ClientFile;
-import com.igeekinc.util.ClientFileMetaData;
-import com.igeekinc.util.FileCopyProgressIndicator;
-import com.igeekinc.util.SHA1HashID;
-import com.igeekinc.util.SystemInfo;
-import com.igeekinc.util.logging.ErrorLogMessage;
-import com.igeekinc.util.pauseabort.AbortedException;
-import com.igeekinc.util.pauseabort.PauseAbort;
 
 public class TestFilesTool 
 {	
@@ -164,7 +165,7 @@ public class TestFilesTool
     
     public static void copyFile(File source, File destination) throws IOException
     {
-        PauseAbort pauser = new PauseAbort(Logger.getLogger(TestFilesTool.class));
+        PauseAbort pauser = new PauseAbort(LogManager.getLogger(TestFilesTool.class));
         ClientFile sourceCF = SystemInfo.getSystemInfo().getClientFileForFile(source);
         ClientFile destinationCF = SystemInfo.getSystemInfo().getClientFileForFile(destination);
         try
@@ -172,7 +173,7 @@ public class TestFilesTool
             SystemInfo.getSystemInfo().getFileCopy().copyFile(sourceCF, false, destinationCF, false, true, pauser, null);
         } catch (AbortedException e)
         {
-            Logger.getLogger(TestFilesTool.class).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(TestFilesTool.class).error(new ErrorLogMessage("Caught exception"), e);
         }
     }
     
@@ -184,7 +185,7 @@ public class TestFilesTool
      */
     public static void copyTree(File source, File destination) throws IOException
     {
-        PauseAbort pauser = new PauseAbort(Logger.getLogger(TestFilesTool.class));
+        PauseAbort pauser = new PauseAbort(LogManager.getLogger(TestFilesTool.class));
         ClientFile sourceCF = SystemInfo.getSystemInfo().getClientFileForFile(source);
         ClientFile destinationCF = SystemInfo.getSystemInfo().getClientFileForFile(destination);
         ClientFile[] filesToCopy = sourceCF.listClientFiles();
@@ -209,7 +210,7 @@ public class TestFilesTool
                         SystemInfo.getSystemInfo().getFileCopy().copyFile(curFileToCopy, false, curFileDestCF, false, true, pauser, new FileCopyProgressIndicator());
                     } catch (AbortedException e)
                     {
-                        Logger.getLogger(TestFilesTool.class).error(new ErrorLogMessage("Caught exception"), e);
+                        LogManager.getLogger(TestFilesTool.class).error(new ErrorLogMessage("Caught exception"), e);
                     }
                 }
             }
@@ -317,7 +318,7 @@ public class TestFilesTool
     	checkBlockNum = BitTwiddle.javaByteArrayToLong(curBlockBytes, kBlockBlockNumOffset);
     	checkPassNum = BitTwiddle.javaByteArrayToInt(curBlockBytes, kPassNumOffset);
     	
-		Logger logger = Logger.getLogger(TestFilesTool.class);
+		Logger logger = LogManager.getLogger(TestFilesTool.class);
 		
     	boolean verified = true;
     	if (checkOffset != offset)

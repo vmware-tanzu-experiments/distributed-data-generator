@@ -16,16 +16,15 @@
  
 package com.igeekinc.util.macos.macosx;
 
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.ClientFile;
 import com.igeekinc.util.ClientFileMetaData;
 import com.igeekinc.util.FilePath;
 import com.igeekinc.util.SystemInfo;
 import com.igeekinc.util.logging.ErrorLogMessage;
-import com.igeekinc.util.windows.WindowsFilePath;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+
+
 
 public class MacOSXFilePath extends FilePath
 {
@@ -59,6 +58,7 @@ public class MacOSXFilePath extends FilePath
 	/* (non-Javadoc)
 	 * @see com.igeekinc.util.FilePath#getNewFilePath(java.lang.String[], int, int, boolean)
 	 */
+ @Override
 	protected FilePath getNewFilePath(
 		String[] components,
 		int offset,
@@ -71,6 +71,7 @@ public class MacOSXFilePath extends FilePath
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+ @Override
 	public String toString()
 	{
 		StringBuffer pathString = toStringBuf(separator);
@@ -82,6 +83,7 @@ public class MacOSXFilePath extends FilePath
     /* (non-Javadoc)
      * @see com.igeekinc.util.FilePath#isPath(java.lang.String)
      */
+    @Override
     public boolean isPath(String checkString) 
     {
         return (checkString.indexOf(separator) >= 0);
@@ -112,7 +114,7 @@ public class MacOSXFilePath extends FilePath
                 }
             } catch (IOException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
                 return this;
             }
             

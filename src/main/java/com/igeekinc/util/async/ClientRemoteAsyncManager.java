@@ -16,16 +16,17 @@
  
 package com.igeekinc.util.async;
 
+import com.igeekinc.util.logging.DebugLogMessage;
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.logging.DebugLogMessage;
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 class WaitingCommand
 {
@@ -74,7 +75,7 @@ public abstract class ClientRemoteAsyncManager implements Runnable
 	private LinkedBlockingQueue<WaitingCommand>commandQueue = new LinkedBlockingQueue<WaitingCommand>(16);
 	private HashMap<Long, WaitingCommand>waiting = new HashMap<Long, WaitingCommand>();
 	private Thread asyncThread;
-	private Logger logger = Logger.getLogger(getClass());
+	private Logger logger = LogManager.getLogger(getClass());
 	public void queueCommand(RemoteAsyncCommandBlock commandBlockToQueue, ComboFutureBase completion, Object attachment)
 	{
 		long curCompletionID;
@@ -101,7 +102,7 @@ public abstract class ClientRemoteAsyncManager implements Runnable
 				Thread.sleep(100);
 			} catch (InterruptedException e)
 			{
-				Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+				LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 			}
 		}
 	}
@@ -142,7 +143,7 @@ public abstract class ClientRemoteAsyncManager implements Runnable
 							}
 						} catch (InterruptedException e)
 						{
-							Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+							LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 						}
 					}
 					else
@@ -205,23 +206,23 @@ public abstract class ClientRemoteAsyncManager implements Runnable
 							}
 							else
 							{
-								Logger.getLogger(getClass()).error(new ErrorLogMessage("Got completion ID = {0} but could not find matching command"));
+								LogManager.getLogger(getClass()).error(new ErrorLogMessage("Got completion ID = {0} but could not find matching command"));
 							}
 						}
 						else
 						{
-							Logger.getLogger(getClass()).error(new ErrorLogMessage("Got back a null completion status"));
+							LogManager.getLogger(getClass()).error(new ErrorLogMessage("Got back a null completion status"));
 						}
 					}
 				} catch (RemoteException e)
 				{
-					Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+					LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 				}
 			}
 		}
 		catch (Throwable t)
 		{
-			Logger.getLogger(getClass()).error(new ErrorLogMessage("Unexpected exception"), t);
+			LogManager.getLogger(getClass()).error(new ErrorLogMessage("Unexpected exception"), t);
 		}
 	}
 	

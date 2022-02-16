@@ -19,15 +19,16 @@ package com.igeekinc.util;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Date;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
 public class SASLRMIRegistry implements Runnable
 {
         // Constants and variables
         // ------------------------------------------------------------------------
 
-   private static Logger logger = Logger.getLogger(SASLRMIRegistry.class);
+   private static Logger logger = LogManager.getLogger(SASLRMIRegistry.class);
 
    // the default port for RMI
    private static final int DEFAULT_RMI_PORT = 1099;
@@ -89,6 +90,7 @@ public class SASLRMIRegistry implements Runnable
         // ------------------------------------------------------------------------
 
    /** Starts the registry. */
+   @Override
    public void run() {
       logger.info("RMIRegistry started on "+String.valueOf(new Date()));
 

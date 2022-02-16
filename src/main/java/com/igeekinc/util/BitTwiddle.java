@@ -329,7 +329,7 @@ public class BitTwiddle
 		catch (UnsupportedEncodingException e)
 		{
 			//TODO Auto-generated catch block
-			org.apache.log4j.Logger exceptionLogger = org.apache.log4j.Logger.getLogger(BitTwiddle.class);
+			org.apache.logging.log4j.Logger exceptionLogger = org.apache.logging.log4j.LogManager.getLogger(BitTwiddle.class);
 			exceptionLogger.error("Caught exception UnsupportedEncodingException", e); //$NON-NLS-1$
 		}
 		return(returnString);

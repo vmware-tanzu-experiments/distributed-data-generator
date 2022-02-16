@@ -16,9 +16,9 @@
  
 package com.igeekinc.util;
 
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.pauseabort.PauserControlleeIF;
+import org.apache.logging.log4j.Logger;
+
 
 public interface LongDurationTask extends Runnable
 {

@@ -16,6 +16,8 @@
  
 package com.igeekinc.util;
 
+import com.igeekinc.util.logging.DebugLogMessage;
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -23,13 +25,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
-
 import javax.swing.event.EventListenerList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.logging.DebugLogMessage;
-import com.igeekinc.util.logging.ErrorLogMessage;
+
 
 class EventWrapper
 {
@@ -58,7 +59,7 @@ class EventWrapper
                 wait();
             } catch (InterruptedException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught InterruptedException in waitForFinish"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught InterruptedException in waitForFinish"), e);
                 return;
             }
         }
@@ -107,7 +108,7 @@ public abstract class DeferredEventProcessor
     ArrayList<EventWrapper> deferredEvents = new ArrayList<EventWrapper>();
     protected CheckCorrectDispatchThread dispatcher;
     protected EventListenerList otherEventListeners = new EventListenerList();
-    protected Logger logger = Logger.getLogger(getClass());
+    protected Logger logger = LogManager.getLogger(getClass());
     
     public DeferredEventProcessor(CheckCorrectDispatchThread inChecker)
     {
@@ -166,7 +167,7 @@ public abstract class DeferredEventProcessor
         }
         catch (Throwable t)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught throwable sending event"), t);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught throwable sending event"), t);
             wrapper.finish(t);
         }
     }
@@ -184,7 +185,7 @@ public abstract class DeferredEventProcessor
         }
         catch (Throwable t)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught throwable sending event"), t);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught throwable sending event"), t);
         }
     }
     public void fireEventOnCorrectThread(EventObject eventToFire)
@@ -201,7 +202,7 @@ public abstract class DeferredEventProcessor
                 deferEvent(eventToFire, false, true);
             } catch (PropertyVetoException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
                 throw new InternalError("Got property veto from regular property event");
             }
         }
@@ -221,7 +222,7 @@ public abstract class DeferredEventProcessor
                 deferEvent(eventToFire, false, false);
             } catch (PropertyVetoException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
                 throw new InternalError("Got property veto from regular property event");
             }
         }
@@ -240,7 +241,7 @@ public abstract class DeferredEventProcessor
                 deferEvent(eventToFire, eventListenerClass, dispatchMethod, true);
             } catch (PropertyVetoException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
                 throw new InternalError("Got property veto from regular property event");
             }
         }
@@ -260,7 +261,7 @@ public abstract class DeferredEventProcessor
                 deferEvent(eventToFire, eventListenerClass, dispatchMethod, false);
             } catch (PropertyVetoException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Got property veto from regular property event"), e);
                 throw new InternalError("Got property veto from regular property event");
             }
         }
@@ -289,7 +290,7 @@ public abstract class DeferredEventProcessor
          int numListeners = listeners.length;
          if (numListeners == 0)
          {
-             logger.debug(new DebugLogMessage("No listeners for event {0}", new Serializable []{fireEvent}));
+            logger.debug(new DebugLogMessage("No listeners for event {0}", new Serializable []{fireEvent}));
          }
          for (int i = 0; i<numListeners; i+=2) 
          {
@@ -300,13 +301,13 @@ public abstract class DeferredEventProcessor
                       dispatchMethod.invoke(listeners[i+1], new Object[]{fireEvent});
                   } catch (IllegalArgumentException e)
                   {
-                      Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+                    LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
                   } catch (IllegalAccessException e)
                   {
-                      Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+                    LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
                   } catch (InvocationTargetException e)
                   {
-                      Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+                    LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
                   }
               }            
          }
