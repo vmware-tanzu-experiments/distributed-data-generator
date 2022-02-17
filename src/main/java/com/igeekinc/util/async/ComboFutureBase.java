@@ -16,14 +16,14 @@
  
 package com.igeekinc.util.async;
 
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 /**
  * A ComboFuture combines a Future object with a CompletionHandler and a caller for CompletionHandlers
@@ -79,7 +79,7 @@ public class ComboFutureBase<V> implements Future<V>, AsyncCompletion<V, Object>
 			return get(defaultTimeout, TimeUnit.MILLISECONDS);
 		} catch (TimeoutException e)
 		{
-			Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 			throw new InterruptedException("Timed out");
 		}
 	}
@@ -98,7 +98,7 @@ public class ComboFutureBase<V> implements Future<V>, AsyncCompletion<V, Object>
     	}
     	if (timeoutMS > 0 && timeoutMS <= elapsed)
     	{
-    		Logger.getLogger(getClass()).error("ComboFutureBase timed out");
+    		LogManager.getLogger(getClass()).error("ComboFutureBase timed out");
     		throw new TimeoutException("Timed out after "+elapsed+" ms");
     	}
     	if (error != null)
@@ -129,7 +129,7 @@ public class ComboFutureBase<V> implements Future<V>, AsyncCompletion<V, Object>
 			}
 			catch (Throwable t)
 			{
-				Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), t);
+				LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), t);
 			}
 		}
 	}

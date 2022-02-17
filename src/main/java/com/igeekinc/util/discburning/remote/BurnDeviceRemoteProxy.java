@@ -16,11 +16,6 @@
  
 package com.igeekinc.util.discburning.remote;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.CheckCorrectDispatchThread;
 import com.igeekinc.util.EventHandler;
 import com.igeekinc.util.discburning.BurnDevice;
@@ -33,6 +28,11 @@ import com.igeekinc.util.discburning.MediaState;
 import com.igeekinc.util.discburning.MediaStatus;
 import com.igeekinc.util.discburning.MediaType;
 import com.igeekinc.util.logging.ErrorLogMessage;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import org.apache.logging.log4j.LogManager;
+
+
 
 public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEventListener
 {
@@ -46,11 +46,13 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
         {
             this.listener = listener;
         }
+        @Override
         public void handleEvent(java.util.EventObject eventToHandle) 
         {
             listener.burnDeviceStatusChanged((BurnDeviceStatusChanged)eventToHandle);
         }
         
+        @Override
         public boolean equals(Object checkObject)
         {
             if (!(checkObject instanceof BurnDeviceStatusChangedEventListenerAdapter))
@@ -68,6 +70,7 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
         remoteDevice.setEventDelivery(remoteEventDelivery);
     }
 
+    @Override
     public BurnState getBurnState()
     {
         try
@@ -75,11 +78,12 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.getBurnState();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return null;
         }
     }
 
+    @Override
     public void openTray() throws IOException
     {
         try
@@ -87,10 +91,11 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             remoteDevice.openTray();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }
     }
 
+    @Override
     public void closeTray() throws IOException
     {
         try
@@ -98,10 +103,11 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             remoteDevice.closeTray();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }
     }
 
+    @Override
     public void ejectMedia() throws IOException
     {
         try
@@ -109,10 +115,11 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             remoteDevice.ejectMedia();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }
     }
 
+    @Override
     public long getAvailableSpace()
     {
         try
@@ -120,16 +127,18 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.getAvailableSpace();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return 0L;
         }
     }
 
+    @Override
     public void burnDeviceEvent(BurnDeviceEvent firedEvent)
     {
         deliverySupport.sendEvent(firedEvent);
     }
 
+    @Override
     public MediaState getMediaState()
     {
         try
@@ -137,11 +146,12 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.getMediaState();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return MediaState.kEmptyState;
         }
     }
 
+    @Override
     public MediaStatus getMediaStatus()
     {
         try
@@ -149,11 +159,12 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.getMediaStatus();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return MediaStatus.kNoMediaStatus;
         }
     }
 
+    @Override
     public MediaType getMediaType()
     {
         try
@@ -161,11 +172,12 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.getMediaType();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return MediaType.kMediaTypeNone;
         }
     }
 
+    @Override
     public double[] getAvailableSpeeds()
     {
         try
@@ -173,11 +185,12 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.getAvailableSpeeds();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return new double[0];
         }
     }
 
+    @Override
     public boolean acquireExclusiveAccess() throws IOException
     {
         try
@@ -185,11 +198,12 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.acquireExclusiveAccess();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return false;
         }
     }
 
+    @Override
     public void askForMediaReservation() throws IOException
     {
         try
@@ -197,10 +211,11 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             remoteDevice.askForMediaReservation();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }
     }
 
+    @Override
     public boolean isMediaReserved()
     {
         try
@@ -208,11 +223,12 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             return remoteDevice.isMediaReserved();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             return false;
         }
     }
 
+    @Override
     public void releaseMediaReservation() throws IOException
     {
         try
@@ -220,66 +236,70 @@ public class BurnDeviceRemoteProxy extends BurnDevice implements BurnDeviceEvent
             remoteDevice.releaseMediaReservation();
         } catch (RemoteException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }        
     }
     
-   public void releaseExclusiveAccess() throws IOException
+    @Override
+    public void releaseExclusiveAccess() throws IOException
     {
-       try
-       {
-           remoteDevice.releaseExclusiveAccess();
-       } catch (RemoteException e)
-       {
-           Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
-       }    
+        try
+        {
+            remoteDevice.releaseExclusiveAccess();
+        } catch (RemoteException e)
+        {
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+        }    
     }
 
-   public boolean isAccessExclusive()
-   {
-       try
-       {
-           return remoteDevice.isAccessExclusive();
-       } catch (RemoteException e)
-       {
-           Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
-           return false;
-       }
-   }
-   public boolean canTrayOpen()
-   {
-       try
-       {
-           return remoteDevice.canTrayOpen();
-       } catch (RemoteException e)
-       {
-           Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
-           return false;
-       }   
-   }
+    @Override
+    public boolean isAccessExclusive()
+    {
+        try
+        {
+            return remoteDevice.isAccessExclusive();
+        } catch (RemoteException e)
+        {
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            return false;
+        }
+    }
+    @Override
+    public boolean canTrayOpen()
+    {
+        try
+        {
+            return remoteDevice.canTrayOpen();
+        } catch (RemoteException e)
+        {
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            return false;
+        }   
+    }
 
-   public boolean isTrayOpen()
-   {
-       try
-       {
-           return remoteDevice.isTrayOpen();
-       } catch (RemoteException e)
-       {
-           Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
-           return false;
-       }   
-   }
+    @Override
+    public boolean isTrayOpen()
+    {
+        try
+        {
+            return remoteDevice.isTrayOpen();
+        } catch (RemoteException e)
+        {
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            return false;
+        }   
+    }
 
-   @Override
-   public MediaType[] getSupportedMedia()
-   {
-       try
-       {
-           return remoteDevice.getSupportedMedia();
-       } catch (RemoteException e)
-       {
-           Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
-           return new MediaType[0];
-       }   
-   } 
+    @Override
+    public MediaType[] getSupportedMedia()
+    {
+        try
+        {
+        return remoteDevice.getSupportedMedia();
+        } catch (RemoteException e)
+        {
+            LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+            return new MediaType[0];
+        }   
+    } 
 }

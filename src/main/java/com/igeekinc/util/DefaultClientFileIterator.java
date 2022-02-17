@@ -16,11 +16,11 @@
  
 package com.igeekinc.util;
 
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.logging.ErrorLogMessage;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+
+
 
 public class DefaultClientFileIterator implements ClientFileIterator
 {
@@ -53,7 +53,7 @@ public class DefaultClientFileIterator implements ClientFileIterator
                 returnFile = directoryToIterate.getChild(childrenNames[childrenOffset]);
             } catch (IOException e)
             {
-                Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+                LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
             }
             childrenOffset ++;
         }

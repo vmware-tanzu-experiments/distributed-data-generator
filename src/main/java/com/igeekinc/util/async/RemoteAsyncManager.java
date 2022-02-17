@@ -16,12 +16,12 @@
  
 package com.igeekinc.util.async;
 
-import java.util.ArrayList;
-
-import org.apache.log4j.Logger;
-
 import com.igeekinc.util.logging.DebugLogMessage;
 import com.igeekinc.util.logging.ErrorLogMessage;
+import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 class CompletionBlock implements AsyncCompletion<Object, Void>
 {
@@ -81,7 +81,7 @@ public class RemoteAsyncManager implements AsyncCompletion<Object, CompletionBlo
 {
 	private ArrayList<CompletionBlock>completionQueue = new ArrayList<CompletionBlock>();
 	private long lastCommandExecuted = -1, lastCommandCompleted = -1;
-	private Logger logger = Logger.getLogger(getClass());
+	private Logger logger = LogManager.getLogger(getClass());
 	public RemoteAsyncManager()
 	{
 		
@@ -206,7 +206,7 @@ public class RemoteAsyncManager implements AsyncCompletion<Object, CompletionBlo
 					completionQueue.wait();
 				} catch (InterruptedException e)
 				{
-					Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+					LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 				}
 			}
 		}

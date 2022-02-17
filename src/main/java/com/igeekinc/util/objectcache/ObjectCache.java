@@ -16,6 +16,7 @@
  
 package com.igeekinc.util.objectcache;
 
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.io.IOException;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -24,10 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 public class ObjectCache<K, V extends CachableObjectIF<K>>
 {
@@ -72,7 +73,7 @@ public class ObjectCache<K, V extends CachableObjectIF<K>>
         dirtyMap = new HashMap<K, V>();
         lruQueue = new LRUQueue<ObjectKey<K>, V>(lruSize);
         refQueue = new ReferenceQueue<V>();
-        logger = Logger.getLogger(getClass());
+        logger = LogManager.getLogger(getClass());
         missHandler = inMissHandler;
         hits = misses = 0;
         ObjectCacheClearHandler.getObjectCacheClearHandler().addObjectCache(this);
@@ -404,6 +405,7 @@ public class ObjectCache<K, V extends CachableObjectIF<K>>
         verifyCache();
     }
     
+    @Override
     public void finalize()
     {
     	if (!closed)
@@ -414,7 +416,7 @@ public class ObjectCache<K, V extends CachableObjectIF<K>>
 				flush();
 			} catch (IOException e)
 			{
-				Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+				LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 			}
     	}
     }

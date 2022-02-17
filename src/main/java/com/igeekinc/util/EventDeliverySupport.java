@@ -16,15 +16,15 @@
  
 package com.igeekinc.util;
 
+import com.igeekinc.util.exceptions.DeadListenerError;
+import com.igeekinc.util.logging.DebugLogMessage;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Hashtable;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.exceptions.DeadListenerError;
-import com.igeekinc.util.logging.DebugLogMessage;
 
 public class EventDeliverySupport extends DeferredEventProcessor
 {
@@ -61,6 +61,7 @@ public class EventDeliverySupport extends DeferredEventProcessor
         }
     }
     
+    @Override
     public void fireEvent(EventObject eventToSend)
     {
         ArrayList<EventHandler> handlers = eventHandlers.get(eventToSend.getClass());
@@ -75,7 +76,7 @@ public class EventDeliverySupport extends DeferredEventProcessor
                     curHandlers[curHandlerNum].handleEvent(eventToSend);
                 } catch (DeadListenerError e)
                 {
-                    Logger.getLogger(getClass()).debug(new DebugLogMessage("Listener is dead, removing"));
+                    LogManager.getLogger(getClass()).debug(new DebugLogMessage("Listener is dead, removing"));
                     removeEventHandler(eventToSend.getClass(), curHandlers[curHandlerNum]);
                 }
             }
@@ -96,11 +97,13 @@ public class EventDeliverySupport extends DeferredEventProcessor
         fireEventOnCorrectThreadNoErrors(eventToFire);
     }
     
+    @Override
     public void fireVetoableEvent(EventObject eventToFire) throws PropertyVetoException
     {
         // TODO Auto-generated method stub
         
     }
+    @Override
     public void notifyFiringThread()
     {
         dispatcher.fireEventsOnDispatchThread(this);

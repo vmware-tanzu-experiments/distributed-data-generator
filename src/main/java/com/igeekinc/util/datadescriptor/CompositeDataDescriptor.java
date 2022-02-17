@@ -16,6 +16,8 @@
  
 package com.igeekinc.util.datadescriptor;
 
+import com.igeekinc.util.async.AsyncCompletion;
+import com.igeekinc.util.async.ComboFutureBase;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,16 +25,9 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.async.AsyncCompletion;
-import com.igeekinc.util.async.ComboFutureBase;
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 class CompositeFuture extends ComboFutureBase<Integer>
 {

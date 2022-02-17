@@ -16,6 +16,18 @@
  
 package com.igeekinc.util;
 
+import com.igeekinc.util.exceptions.FeatureNotSupportedException;
+import com.igeekinc.util.exceptions.GroupNotFoundException;
+import com.igeekinc.util.exceptions.UserNotFoundException;
+import com.igeekinc.util.fileinfo.FileInfoDBManager;
+import com.igeekinc.util.fsevents.FSEventsProcessor;
+import com.igeekinc.util.fsevents.FileStateChangedEventListener;
+import com.igeekinc.util.fsevents.FileStateChangedSupport;
+import com.igeekinc.util.logging.ErrorLogMessage;
+import com.igeekinc.util.msgpack.ClientFileMetaDataMsgPack;
+import com.igeekinc.util.scripting.ScriptExecutor;
+import com.igeekinc.util.xmlserial.XMLObjectParseHandler;
+import com.igeekinc.util.xmlserial.XMLObjectSerializeHandler;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -29,21 +41,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.exceptions.FeatureNotSupportedException;
-import com.igeekinc.util.exceptions.GroupNotFoundException;
-import com.igeekinc.util.exceptions.UserNotFoundException;
-import com.igeekinc.util.fileinfo.FileInfoDBManager;
-import com.igeekinc.util.fsevents.FSEventsProcessor;
-import com.igeekinc.util.fsevents.FileStateChangedEventListener;
-import com.igeekinc.util.fsevents.FileStateChangedSupport;
-import com.igeekinc.util.logging.ErrorLogMessage;
-import com.igeekinc.util.msgpack.ClientFileMetaDataMsgPack;
-import com.igeekinc.util.scripting.ScriptExecutor;
-import com.igeekinc.util.xmlserial.XMLObjectParseHandler;
-import com.igeekinc.util.xmlserial.XMLObjectSerializeHandler;
 
 public abstract class SystemInfo// extends ChangeModel
 {
@@ -52,14 +53,13 @@ public abstract class SystemInfo// extends ChangeModel
   protected static FileInfoDBManager fileInfoDBManager;
   protected FileStateChangedSupport fileStateChangedSupport;
   
-  //PauseAbort sleepPauser = new PauseAbort(org.apache.log4j.Logger.getLogger(SystemInfo.class));
-  
+
   @SuppressWarnings("unchecked")
 static public synchronized SystemInfo getSystemInfo()
   {
     String  osName = System.getProperty("os.name"); //$NON-NLS-1$
     String className = null;
-    Logger logger = org.apache.log4j.Logger.getLogger(SystemInfo.class);
+    Logger logger = LogManager.getLogger(SystemInfo.class);
     
     if (mySystemInfo == null)
     {
@@ -335,7 +335,7 @@ static public synchronized SystemInfo getSystemInfo()
 	  } catch (SocketException e)
 	  {
 		  // TODO Auto-generated catch block
-		  Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+		  LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 	  }
 	  InterfaceAddressInfo [] returnInfo = returnInfoList.toArray(new InterfaceAddressInfo[returnInfoList.size()]);
 	  return returnInfo;
@@ -360,15 +360,15 @@ static public synchronized SystemInfo getSystemInfo()
 	  } catch (NoSuchMethodException e)
 	  {
 		  // TODO Auto-generated catch block
-		  Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+		  LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 	  } catch (SecurityException e)
 	  {
 		  // TODO Auto-generated catch block
-		  Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+		  LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 	  } catch (ClassNotFoundException e)
 	  {
 		  // TODO Auto-generated catch block
-		  Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+		  LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 	  }
 	  
 	  ArrayList<InterfaceAddressInfo>returnInfoList = new ArrayList<InterfaceAddressInfo>();
@@ -387,15 +387,15 @@ static public synchronized SystemInfo getSystemInfo()
 		} catch (IllegalAccessException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (IllegalArgumentException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 		} catch (InvocationTargetException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+			LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 		}
 	  }
 	  else
@@ -424,13 +424,13 @@ static public synchronized SystemInfo getSystemInfo()
 	  {
 	  } catch (IllegalAccessException e)
 	  {
-		  Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+        LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 	  } catch (IllegalArgumentException e)
 	  {
-		  Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+        LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 	  } catch (InvocationTargetException e)
 	  {
-		  Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+        LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 	  }
 	  return true;	// 1.5 or lower - all interfaces are always up
   }

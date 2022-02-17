@@ -16,6 +16,9 @@
  
 package com.igeekinc.util;
 
+import com.igeekinc.util.jdk14keycompat.PublicKeyWorkaroundInputStream;
+import com.igeekinc.util.jdk14keycompat.RSAPublicKeyOverride;
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,19 +40,16 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.jdk14keycompat.PublicKeyWorkaroundInputStream;
-import com.igeekinc.util.jdk14keycompat.RSAPublicKeyOverride;
-import com.igeekinc.util.logging.ErrorLogMessage;
+
 
 /**
  * EncryptionKeys hold the keys for encrypting/decrypting
@@ -209,7 +209,7 @@ public class EncryptionKeys implements Serializable
 				returnKey = (PrivateKey)objectStream.readObject();
 			} catch (ClassNotFoundException e)
 			{
-				Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+				LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
 				throw new InternalError("Cannot find class when deserializing private key");
 			}
         }
@@ -223,7 +223,7 @@ public class EncryptionKeys implements Serializable
         			returnKey = (PrivateKey)objectStream.readObject();
         		} catch (ClassNotFoundException e)
         		{
-        			Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+        			LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         			throw new InternalError("Cannot find class when deserializing private key");
         		}
         	} catch (IOException e)
@@ -286,6 +286,7 @@ public class EncryptionKeys implements Serializable
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+ @Override
 	public boolean equals(Object obj) 
 	{
 		if (obj instanceof EncryptionKeys)

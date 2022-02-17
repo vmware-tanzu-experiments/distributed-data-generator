@@ -16,15 +16,12 @@
  
 package com.igeekinc.util.objectcache;
 
+import com.igeekinc.util.ChangeModel;
+import com.igeekinc.util.CheckCorrectDispatchThread;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import com.igeekinc.util.ChangeModel;
-import com.igeekinc.util.CheckCorrectDispatchThread;
 
 public class ObjectManager<K, V extends CachableObject<K>> extends ChangeModel
 {

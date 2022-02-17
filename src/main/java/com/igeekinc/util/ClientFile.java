@@ -16,6 +16,8 @@
  
 package com.igeekinc.util;
 
+import com.igeekinc.util.exceptions.ForkNotFoundException;
+import com.igeekinc.util.logging.ErrorLogMessage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -28,11 +30,9 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
 
-import org.apache.log4j.Logger;
 
-import com.igeekinc.util.exceptions.ForkNotFoundException;
-import com.igeekinc.util.logging.ErrorLogMessage;
 
 
 /**
@@ -82,7 +82,7 @@ static final long serialVersionUID = 7319714950392853867L;
         }
         catch (IOException e1)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Could not get volume for {0} or its parent", new Serializable[]{
+          LogManager.getLogger(getClass()).error(new ErrorLogMessage("Could not get volume for {0} or its parent", new Serializable[]{
                     volumeFindPath.toString()
             }));
         }
@@ -129,8 +129,11 @@ static final long serialVersionUID = 7319714950392853867L;
       else
           backupPath = fullPath.removeLeadingComponents(base.getNumComponents());
   }
+  @Override
   public abstract int getNumForks();
+  @Override
   public abstract String [] getForkNames();
+  @Override
   public abstract ClientFileMetaData getMetaData() throws IOException;
   public abstract void setMetaData(ClientFileMetaData newMetaData) throws IOException;
 	
@@ -141,10 +144,14 @@ static final long serialVersionUID = 7319714950392853867L;
    * @return
    * @throws ForkNotFoundException
    */
+  @Override
   public abstract InputStream getForkInputStream(String streamName) throws ForkNotFoundException;
+  @Override
   public abstract OutputStream getForkOutputStream(String streamName) throws ForkNotFoundException;
   
+  @Override
   public abstract InputStream getForkInputStream(String streamName, boolean noCache) throws ForkNotFoundException;
+  @Override
   public abstract OutputStream getForkOutputStream(String streamName, boolean noCache) throws ForkNotFoundException;
   
   public abstract FileChannel getForkChannel(String forkName, boolean writeable) throws ForkNotFoundException;
@@ -158,7 +165,7 @@ static final long serialVersionUID = 7319714950392853867L;
             volume = SystemInfo.getSystemInfo().getVolumeManager().getVolumeForPath(getFilePath());
         } catch (IOException e)
         {
-            Logger.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
+          LogManager.getLogger(getClass()).error(new ErrorLogMessage("Caught exception"), e);
         }
       }
     return volume;
@@ -182,6 +189,7 @@ static final long serialVersionUID = 7319714950392853867L;
    * getBackupPartialPath returns a path that is suitable for concatenation to another path.
    * This skips the base directory
    */
+  @Override
   public FilePath getBackupPartialPath()
   {
     return(backupPath);
@@ -228,6 +236,7 @@ static final long serialVersionUID = 7319714950392853867L;
     return returnFiles;
   }
   
+  @Override
   public ClientFile getChild(String childName)
   throws IOException
   {
@@ -238,6 +247,7 @@ static final long serialVersionUID = 7319714950392853867L;
   	return volume.getClientFile(this, childName);
   }
   
+  @Override
   public ClientFile getChild(FilePath childPath)
   throws IOException
   {
@@ -265,11 +275,13 @@ static final long serialVersionUID = 7319714950392853867L;
       return returnFile;
   }
   
+  @Override
   public String toString()
   {
     return(getAbsolutePath());
   }
 
+  @Override
   public boolean isMountPoint()
   {
     return false; // override for Unix & Mac OS X
@@ -288,11 +300,13 @@ static final long serialVersionUID = 7319714950392853867L;
   	
   }
   
+  @Override
   public long totalLength()
   {
   	return length();
   }
   
+  @Override
   public FilePath getFilePath()
   {
       if (filePath == null)
