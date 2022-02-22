@@ -19,7 +19,11 @@ ifndef VERSION
 VERSION := $(shell echo `git rev-parse --abbrev-ref HEAD`-`git log -1 --pretty=format:%h`-`date "+%d.%b.%Y.%H.%M.%S"`)
 endif
 
+# Please reference links below to log in to gcloud before pushing image to GCR
+# https://cloud.google.com/container-registry/docs/advanced-authentication#gcloud-helper
+# https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-console
 REGISTRY ?= gcr.io/velero-gcp
+
 JUMP_PAD_IMAGE = $(REGISTRY)/jump-pad
 WORKER_IMAGE = $(REGISTRY)/kibishii-worker
 
