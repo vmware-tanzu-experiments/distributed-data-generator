@@ -19,7 +19,7 @@ ifndef VERSION
 VERSION := $(shell echo `git rev-parse --abbrev-ref HEAD`-`git log -1 --pretty=format:%h`-`date "+%d.%b.%Y.%H.%M.%S"`)
 endif
 
-REGISTRY ?= dpcpinternal
+REGISTRY ?= gcr.io/velero-gcp
 JUMP_PAD_IMAGE = $(REGISTRY)/jump-pad
 WORKER_IMAGE = $(REGISTRY)/kibishii-worker
 
