@@ -15,63 +15,19 @@ do
 	RUNNING_NODES=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379 | grep /kibishii/nodes | wc -l`
 done
 
-j=0
-STATUS=""
-while [ -z "$STATUS" ] &&  [ $j -le 20 ]
-do
-    echo j:$j
-    echo "{\"opID\":\"$OPID\",\"cmd\":\"verify\",\"levels\":\"$LEVELS\",\"dirsPerLevel\":\"$DIRSPERLEVEL\",\"filesPerLevel\":\"$FILESPERLEVEL\",\"fileLength\":\"$FILELENGTH\",\"blockSize\":\"$BLOCKSIZE\",\"passNum\":\"$PASSNUM\"}" | etcdctl put /kibishii/control --endpoints=http://etcd-client:2379
-    sleep 10
-    STATUS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".status" | sed -e 's/"//g'`
-    echo STATUS_1:$STATUS
-    ((j++))
-done
-
-i=0
+echo "{\"opID\":\"$OPID\",\"cmd\":\"verify\",\"levels\":\"$LEVELS\",\"dirsPerLevel\":\"$DIRSPERLEVEL\",\"filesPerLevel\":\"$FILESPERLEVEL\",\"fileLength\":\"$FILELENGTH\",\"blockSize\":\"$BLOCKSIZE\",\"passNum\":\"$PASSNUM\"}" | etcdctl put /kibishii/control --endpoints=http://etcd-client:2379
 STATUS="running"
-while [ "$STATUS" = 'running' ] &&  [ $i -le 36 ]
+while [ "$STATUS" = 'running' ]
 do
-    echo i:$i
 	sleep 10
 	STATUS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".status" | sed -e 's/"//g'`
 	NODES_COMPLETED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesCompleted" | sed -e 's/"//g'`
-    NODES_STARTING=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesStarting" | sed -e 's/"//g'`
-    NODES_FAILED=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only | jq ".nodesFailed" | sed -e 's/"//g'`
-    RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
-    echo RESULT:$RESULT
-    STATUS_KEY=`etcdctl get /kibishii/status/ --prefix --endpoints=http://etcd-client:2379`
-    echo STATUS_KEY:$STATUS_KEY
-    NODE_LIST=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
-    echo NODE_LIST:$NODE_LIST
-    CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
-    echo CTL:$CTL
-    OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only`
-    echo OPS:$OPS
-    echo STATUS:$STATUS
-    ((i++))
-    date
 done
-
-
-if [ "$NODES_COMPLETED" != "$NODES" ]; then
+if [ "$NODES_COMPLETED" -ne "$NODES" ] 
+then
 	STATUS="failed"
-    echo STATUS:$STATUS
-    echo NODES_COMPLETED:$NODES_COMPLETED
-    exit 80
 fi
-if [ "$NODES_STARTING" != "$NODES" ]; then
-	STATUS="failed"
-    echo STATUS:$STATUS
-    echo NODES_STARTING:$NODES_STARTING
-    exit 81
-fi
-if [ "$NODES_FAILED" != "" ]; then
-	STATUS="failed"
-    echo STATUS:$STATUS
-    echo NODES_FAILED:$NODES_FAILED
-    exit 82
-fi
-
+echo $STATUS
 if [ "$STATUS" = 'success' ]
 then
     nodes=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379 | grep ^kibishii-deployment`
@@ -88,21 +44,9 @@ then
             fi
         done
     done
-    echo END_STATUS:$STATUS
-    exit 0
+	exit 0
 fi
-RESULT=`etcdctl get /kibishii/results/ --prefix --endpoints=http://etcd-client:2379`
-echo RESULT:$RESULT
-STATUS_KEY=`etcdctl get /kibishii/status/ --prefix --endpoints=http://etcd-client:2379`
-echo STATUS_KEY:$STATUS_KEY
-NODES=`etcdctl get /kibishii/nodes/ --prefix --endpoints=http://etcd-client:2379`
-echo NODES:$NODES
-CTL=`etcdctl get /kibishii/control --endpoints=http://etcd-client:2379`
-echo CTL:$CTL
-OPS=`etcdctl get /kibishii/ops/$OPID --endpoints=http://etcd-client:2379 --print-value-only`
-echo OPS:$OPS
-echo END_ERR_STATUS:$STATUS
-exit 1
 
+exit 1
 
 
