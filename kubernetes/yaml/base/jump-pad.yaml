@@ -5,4 +5,4 @@ metadata:
 spec:
   containers:
   - name: jump-pad
-    image: harbor-repo.vmware.com/harbor-ci/jump-pad:fix-log4j-cves-f2d2d04-15.Feb.2022.10.19.24
+    image: gcr.io/velero-gcp/jump-pad:main-1968fa1-22.Feb.2022.03.29.33
