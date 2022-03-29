@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: kibishii
-        image: harbor-repo.vmware.com/harbor-ci/kibishii-worker:fix-log4j-cves-f2d2d04-15.Feb.2022.10.19.24
+        image: gcr.io/velero-gcp/kibishii-worker:main-b33644a-22.Feb.2022.13.16.28
         volumeMounts:
         - name: kibishii-data
           mountPath: /data
