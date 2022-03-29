@@ -1,18 +1,10 @@
-apiVersion: storage.k8s.io/v1
 kind: StorageClass
+apiVersion: storage.k8s.io/v1
 metadata:
-  name: kibishii-csi-storage-class
-provisioner: file.csi.azure.com
+  name: azuredisk-csi-waitforfirstconsumer
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: StandardSSD_LRS
+allowVolumeExpansion: true
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
-allowVolumeExpansion: true
-mountOptions:
-  - dir_mode=0640
-  - file_mode=0640
-  - uid=0
-  - gid=0
-  - mfsymlinks
-  - cache=strict
-  - nosharesock
-parameters:
-  skuName: Standard_LRS
