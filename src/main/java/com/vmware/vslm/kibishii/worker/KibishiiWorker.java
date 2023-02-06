@@ -15,27 +15,9 @@ limitations under the License.
 */
 package com.vmware.vslm.kibishii.worker;
 
-import java.io.File;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import com.vmware.vslm.kibishii.core.ExecutionThread;
 import com.vmware.vslm.kibishii.core.GeneratorThread;
-import com.vmware.vslm.kibishii.core.Results;
 import com.vmware.vslm.kibishii.core.VerifierThread;
-
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.KeyValue;
@@ -53,6 +35,22 @@ import io.etcd.jetcd.watch.WatchEvent;
 import io.etcd.jetcd.watch.WatchEvent.EventType;
 import io.etcd.jetcd.watch.WatchResponse;
 import io.grpc.stub.StreamObserver;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
+
 
 public class KibishiiWorker {
 
@@ -70,8 +68,10 @@ public class KibishiiWorker {
 					try {
 						new KibishiiWorker(args[0], endpoints, root);
 					} catch (InterruptedException e) {
+						System.out.println("Create KibishiiWorker InterruptedException error: ("+e+")");
 						e.printStackTrace();
 					} catch (ExecutionException e) {
+						System.out.println("Create KibishiiWorker ExecutionException error: ("+e+")");
 						e.printStackTrace();
 					}
 				}
@@ -83,7 +83,7 @@ public class KibishiiWorker {
 	private final String nodeID;
 	private final Client client;
 	private final long leaseID;
-	private int leaseSecs = 10;
+	private int leaseSecs = 600;
 	private long leaseMS = leaseSecs * 1000;
 	private String nodeKey, controlKey, resultsKey, statusKey;
 	private ExecutionThread executionThread;
@@ -107,13 +107,13 @@ public class KibishiiWorker {
 
 			@Override
 			public void onError(Throwable t) {
-				System.out.println("onError called");
+				System.out.println("keepAlive: onError called");
 				t.printStackTrace();
 			}
 
 			@Override
 			public void onCompleted() {
-				System.out.println("onCompleted called");
+				System.out.println("keepAlive: onCompleted called");
 			}
 		});
 		int retries = 3;
@@ -126,10 +126,10 @@ public class KibishiiWorker {
 			ByteSequence value = toBS(nodeID);
 			CompletableFuture<TxnResponse> resFuture = checkTxn
 					.If(new Cmp(key, Cmp.Op.EQUAL, CmpTarget.createRevision(0)))
-					.Then(io.etcd.jetcd.op.Op.put(key, value, PutOption.newBuilder().withLeaseId(leaseID).build()))
+					.Then(io.etcd.jetcd.op.Op.put(key, value, PutOption.newBuilder().build()))
 					.commit();
 			TxnResponse res = resFuture.get();
-			System.out.println("txn completed");
+			System.out.println("txn completed:"+retries);
 			if (res.getPutResponses().size() > 0) {
 				System.out.println("Succeded, we are owner for " + nodeID);
 				succeeded = true;
@@ -144,9 +144,10 @@ public class KibishiiWorker {
 
 			@Override
 			public void onNext(WatchResponse response) {
-				System.out.println("On next called, response = " + response);
+				System.out.println("watch: On next called, response = " + response);
 				for (WatchEvent curEvent:response.getEvents()) {
 					if (curEvent.getEventType() == EventType.PUT) {
+						System.out.println("controlNodeUpdated= " + nodeID);
 						controlNodeUpdated(nodeID, root);
 					}
 				}
@@ -154,13 +155,13 @@ public class KibishiiWorker {
 
 			@Override
 			public void onError(Throwable t) {
-				System.out.println("onError called");
+				System.out.println("watch: onError called");
 				t.printStackTrace();
 			}
 
 			@Override
 			public void onCompleted() {
-				System.out.println("onCompleted called");
+				System.out.println("watch: onCompleted called");
 			}
 		});
 	}
@@ -168,8 +169,22 @@ public class KibishiiWorker {
 
 	private void controlNodeUpdated(String nodeID, File root) {
 		try {
-			GetResponse getResponse = client.getKVClient().get(toBS(controlKey)).get();
-			String jsonValue = getResponse.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8);
+			System.out.println("start [controlNodeUpdated] :");
+			String jsonValue = "";
+			int retryTime=60;
+			while (retryTime>0) {
+				try {
+					System.out.println("start [controlNodeUpdated] :1");
+					GetResponse getResponse = client.getKVClient().get(toBS(controlKey)).get();
+					jsonValue = getResponse.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8);
+				    break;
+				} catch (Exception e) {
+					retryTime--;
+					System.out.println("[controlNodeUpdated] retry:"+ Integer.toString(retryTime));
+					TimeUnit.SECONDS.sleep(3);
+				}
+			}
+			System.out.println("start [controlNodeUpdated] :2");
 			JSONParser parser = new JSONParser();
 			System.out.println("Parsing " + jsonValue);
 			JSONObject responseObject = (JSONObject) parser.parse(jsonValue);
@@ -183,7 +198,7 @@ public class KibishiiWorker {
 					long fileLength = getLong(responseObject, "fileLength");
 					int blockSize = getInteger(responseObject, "blockSize");
 					int passNum = getInteger(responseObject, "passNum");
-					System.out.println("Generate started, root = " + root +
+					System.out.println("("+cmd + ") started, root = " + root +
 							", levels = " + levels +
 							", dirsPerLevel = " + dirsPerLevel +
 							", filesPerLevel = " + filesPerLevel +
@@ -264,29 +279,46 @@ public class KibishiiWorker {
 	}
 
 	private void createExecutionNode(int opID) throws InterruptedException, ExecutionException {
-		int nodes;
-		List<KeyValue>nodeList = client.getKVClient().get(toBS(KIBISHII_NODES_PREFIX),
-				GetOption.newBuilder().withPrefix(toBS(KIBISHII_NODES_PREFIX)).build()).get().getKvs();
-		nodes = nodeList.size();
-		String completionNodeKey = KIBISHII_OPS_PREFIX + opID;
-		Txn checkTxn = client.getKVClient().txn();
-		ByteSequence key = toBS(completionNodeKey);
-		JSONObject completionJSON = new JSONObject();
-		completionJSON.put("nodesStarting", Integer.toString(nodes));
-		completionJSON.put("nodesCompleted", "0");
-		completionJSON.put("nodesSuccessful", "");
-		completionJSON.put("nodesFailed", "");
-		completionJSON.put("status", "running");
+		int retryTime=60;
+        while (retryTime>0) {
+            try {
+				int nodes;
+				List<KeyValue>nodeList = client.getKVClient().get(toBS(KIBISHII_NODES_PREFIX),
+						GetOption.newBuilder().withPrefix(toBS(KIBISHII_NODES_PREFIX)).build()).get().getKvs();
+				nodes = nodeList.size();
+				String completionNodeKey = KIBISHII_OPS_PREFIX + opID;
+				Txn checkTxn = client.getKVClient().txn();
+				ByteSequence key = toBS(completionNodeKey);
+				JSONObject completionJSON = new JSONObject();
+				completionJSON.put("nodesStarting", Integer.toString(2));
+				completionJSON.put("nodesCompleted", "0");
+				completionJSON.put("nodesSuccessful", "");
+				completionJSON.put("nodesFailed", "");
+				completionJSON.put("status", "running");
 
-		ByteSequence value = toBS(completionJSON.toJSONString());
+				System.out.println("[createExecutionNode] nodesStarting: " + Integer.toString(2));
 
-		// Only insert if we're the first one to insert something
-		CompletableFuture<TxnResponse> resFuture = checkTxn
-				.If(new Cmp(key, Cmp.Op.EQUAL, CmpTarget.createRevision(0)))
-				.Then(io.etcd.jetcd.op.Op.put(key, value, PutOption.newBuilder().withLeaseId(leaseID).build()))
-				.commit();
-		resFuture.get();	// We actually don't care if it succeeds, if it fails it means someone else
-							// succeeded
+				ByteSequence value = toBS(completionJSON.toJSONString());
+
+				// Only insert if we're the first one to insert something
+				CompletableFuture<TxnResponse> resFuture = checkTxn
+						.If(new Cmp(key, Cmp.Op.EQUAL, CmpTarget.createRevision(0)))
+						.Then(io.etcd.jetcd.op.Op.put(key, value, PutOption.newBuilder().build()))
+						.commit();
+				TxnResponse res = resFuture.get();
+				// We actually don't care if it succeeds, if it fails it means someone else
+				if (res.getPutResponses().size() > 0) {
+					System.out.println("[createExecutionNode] Succeded, created completion");
+				} else {
+					System.out.println("[createExecutionNode] Collided");
+				}
+				break;
+            } catch (Exception e) {
+                retryTime--;
+				System.out.println("[createExecutionNode] retry:"+ Integer.toString(retryTime));
+                TimeUnit.SECONDS.sleep(3);
+            }
+        }
 		return;
 	}
 
@@ -305,29 +337,37 @@ public class KibishiiWorker {
 			JSONObject completionValue = (JSONObject)parser.parse(completionNodeKV.getValue().toString(StandardCharsets.UTF_8));
 			int nodesStarting = Integer.parseInt((String)completionValue.get("nodesStarting"));
 			int nodesCompleted = Integer.parseInt((String)completionValue.get("nodesCompleted"));
-
+            System.out.println("Get: nodesStarting: "+nodesStarting);
+			System.out.println("Get: nodesCompleted: "+nodesCompleted);
 			String successNodesStr = (String)completionValue.get("nodesSuccessful");
 			String failedNodesStr = (String)completionValue.get("nodesFailed");
 			nodesCompleted ++;
 			completionValue.put("nodesCompleted", Integer.toString(nodesCompleted));
+			System.out.println("Put: nodesCompleted:"+Integer.toString(nodesCompleted));
+
 
 			if (success) {
 				if (successNodesStr.length() > 0)
 					successNodesStr += ",";
 				successNodesStr += nodeID;
 				completionValue.put("nodesSuccessful", successNodesStr);
+				System.out.println("Put: nodesSuccessful:"+successNodesStr);
 
 			} else {
 				if (failedNodesStr.length() > 0)
 					failedNodesStr += ",";
 				failedNodesStr += nodeID;
 				completionValue.put("nodesFailed", failedNodesStr);
+				System.out.println("Put: nodesFailed:" +failedNodesStr);
 			}
+			System.out.println("nodesCompleted:" +nodesCompleted+" nodesStarting:" + nodesStarting);
 			if (nodesCompleted == nodesStarting) {
 				if (failedNodesStr.length() > 0) {
 					completionValue.put("status", "failed");
+					System.out.println("Put status: failed");
 				} else {
 					completionValue.put("status", "success");
+					System.out.println("Put status: success");
 				}
 			}
 			Txn updateTxn = client.getKVClient().txn();
