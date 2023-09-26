@@ -16,9 +16,13 @@
         <url>file:${project.basedir}/dependencies</url>
     </repository>-->
     <repository>
-    	<id>bedatadriven</id>
-    	<name>bedatadriven</name>
-    	<url>https://nexus.bedatadriven.com/content/repositories/public/</url>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
 </repositories>
   <properties>
@@ -65,8 +69,8 @@
     </dependency>
     <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk15on</artifactId>
-        <version>1.67</version>
+        <artifactId>bcprov-jdk15to18</artifactId>
+        <version>1.74</version>
     </dependency>
     <dependency>
         <groupId>org.gnu.gettext</groupId>
