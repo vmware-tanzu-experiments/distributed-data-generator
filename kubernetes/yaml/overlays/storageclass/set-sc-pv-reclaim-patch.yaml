@@ -1,0 +1,3 @@
+- path: /reclaimPolicy
+  op: replace
+  value: Retain
