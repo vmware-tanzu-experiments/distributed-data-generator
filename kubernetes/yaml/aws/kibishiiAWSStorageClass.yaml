@@ -7,4 +7,8 @@ parameters:
   type: gp2
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
-
+allowedTopologies:
+- matchLabelExpressions:
+  - key: failure-domain.beta.kubernetes.io/zone
+    values:
+    - us-east-1c
