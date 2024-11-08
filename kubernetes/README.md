@@ -1,7 +1,11 @@
 # Running Kibishii on Kubernetes
 
-# These instructions and yamls are obsolete and are in the process of being removed.  Please refer
-to the yaml/README.md for how to install using Kustomize
+# These instructions and yamls are obsolete and are in the process of being removed.  Please refer to the yaml/README.md for how to install using Kustomize.
+
+The Kibishii now adopts the VKS environment. As a result, the support of TKGm environment is obsoleted.
+FYI, the current TKGm environment uses the `vSphere CNS/CSI` way to create volume. The corresponding StorageClass is `kibishiiCNSStorageClass.yaml`.
+However, this is result of the current situation, there is no guarantee that `kibishiiCNSStorageClass.yaml` still works in future TKGm environment. Please do some test before using it in TKGm.
+
 
 ## Create namespace for Kibishii
 	kubectl create namespace kibishii
@@ -18,7 +22,7 @@ Kibishii requires a storage class to operate.  By default, the storage class is 
 |Provider|File|
 |--------|----|
 |AWS|kibishiiAWSStorageClass.yaml|
-|vSphere CNS/CSI|kibishiiCNSStorageClass.yaml|
+|vSphere CNS/CSI (obsolete)|kibishiiCNSStorageClass.yaml|
 |vSphere CNS/CSP (obsolete)|kibishiiCNSCSPStorageClass.yaml|
 
 To create the storage class use this command:
