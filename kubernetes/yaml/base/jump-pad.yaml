@@ -6,3 +6,12 @@ spec:
   containers:
   - name: jump-pad
     image: gcr.io/velero-gcp/jump-pad:fix-cve-2023-33201-6fe3ba4-26.Sep.2023.04.06.22
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - "ALL"
+      seccompProfile:
+        type: "RuntimeDefault"
+      runAsUser: 65534
+      runAsNonRoot: true

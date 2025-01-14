@@ -13,7 +13,6 @@ spec:
 
 
 ---
-
 apiVersion: v1
 kind: Pod
 metadata:
@@ -27,6 +26,8 @@ spec:
     - /usr/local/bin/etcd
     - --name
     - etcd0
+    - --data-dir
+    - /tmp
     - --initial-advertise-peer-urls
     - http://etcd0:2380
     - --listen-peer-urls
@@ -41,6 +42,15 @@ spec:
     - new
     image: quay.io/coreos/etcd:latest
     name: etcd0
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - "ALL"
+      seccompProfile:
+        type: "RuntimeDefault"
+      runAsUser: 65534
+      runAsNonRoot: true
     ports:
     - containerPort: 2379
       name: client
@@ -73,7 +83,6 @@ spec:
 
 
 ---
-
 apiVersion: v1
 kind: Pod
 metadata:
@@ -87,6 +96,8 @@ spec:
     - /usr/local/bin/etcd
     - --name
     - etcd1
+    - --data-dir
+    - /tmp
     - --initial-advertise-peer-urls
     - http://etcd1:2380
     - --listen-peer-urls
@@ -101,6 +112,15 @@ spec:
     - new
     image: quay.io/coreos/etcd:latest
     name: etcd1
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - "ALL"
+      seccompProfile:
+        type: "RuntimeDefault"
+      runAsUser: 65534
+      runAsNonRoot: true
     ports:
     - containerPort: 2379
       name: client
@@ -148,6 +168,8 @@ spec:
     - /usr/local/bin/etcd
     - --name
     - etcd2
+    - --data-dir
+    - /tmp
     - --initial-advertise-peer-urls
     - http://etcd2:2380
     - --listen-peer-urls
@@ -162,6 +184,15 @@ spec:
     - new
     image: quay.io/coreos/etcd:latest
     name: etcd2
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - "ALL"
+      seccompProfile:
+        type: "RuntimeDefault"
+      runAsUser: 65534
+      runAsNonRoot: true
     ports:
     - containerPort: 2379
       name: client
