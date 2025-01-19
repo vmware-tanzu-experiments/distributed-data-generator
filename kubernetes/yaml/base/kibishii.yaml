@@ -13,12 +13,23 @@ spec:
       labels:
         app: kibishii
     spec:
+      securityContext:
+        fsGroup: 65534
       containers:
       - name: kibishii
         image:  gcr.io/velero-gcp/kibishii-worker:fix-cve-2023-33201-6fe3ba4-26.Sep.2023.04.06.22
         volumeMounts:
         - name: kibishii-data
           mountPath: /data
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - "ALL"
+          seccompProfile:
+            type: "RuntimeDefault"
+          runAsUser: 65534
+          runAsNonRoot: true
   volumeClaimTemplates:
   - metadata:
       name: kibishii-data
