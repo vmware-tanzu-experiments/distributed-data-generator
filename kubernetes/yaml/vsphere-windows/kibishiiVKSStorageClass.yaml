@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: kibishii-storage-class
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+parameters:
+  svStorageClass: worker-storagepolicy
+provisioner: csi.vsphere.vmware.com
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

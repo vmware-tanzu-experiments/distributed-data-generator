@@ -43,9 +43,14 @@ push-jump-pad-container: jump-pad-container
 	docker push $(JUMP_PAD_IMAGE):$(VERSION)
 
 worker-container: target
-	docker build -t $(WORKER_IMAGE):$(VERSION) target/package/worker
+	docker buildx build --output="type=registry" --platform linux/amd64 --provenance=false --sbom=false -t $(WORKER_IMAGE):$(VERSION)-linux -f target/package/worker/dockerfile target/package/worker
+	docker buildx build --output="type=registry" --platform windows/amd64 --provenance=false --sbom=false -t $(WORKER_IMAGE):$(VERSION)-windows -f target/package/worker/dockerfile-windows target/package/worker
 
 push-worker-container: worker-container
-	docker push $(WORKER_IMAGE):$(VERSION)
+	docker manifest create $(WORKER_IMAGE):$(VERSION) \
+		$(WORKER_IMAGE):$(VERSION)-linux \
+		$(WORKER_IMAGE):$(VERSION)-windows
 
+	docker manifest inspect $(WORKER_IMAGE):$(VERSION)
 
+	docker manifest push --purge $(WORKER_IMAGE):$(VERSION)

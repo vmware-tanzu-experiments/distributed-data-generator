@@ -17,7 +17,13 @@ spec:
         fsGroup: 65534
       containers:
       - name: kibishii
-        image:  gcr.io/velero-gcp/kibishii-worker:fix-cve-2023-33201-6fe3ba4-26.Sep.2023.04.06.22
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        image: gcr.io/velero-gcp/kibishii-worker:multi-arch-36acba8-03.Apr.2025.07.01.54
         volumeMounts:
         - name: kibishii-data
           mountPath: /data
