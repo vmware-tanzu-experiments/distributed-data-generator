@@ -1,0 +1,26 @@
+name: Weekly Updates
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs every Sunday at midnight
+  workflow_dispatch: # for adhoc trigger / debugging
+jobs:
+  commit_changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update etcd image
+        run: |
+          find . -type f -name "etcd.yaml" -exec yq eval -i "select(.kind == \"Pod\" and .metadata.labels.app == \"etcd\") |= .spec.containers[0].image = \"quay.io/coreos/etcd:$(curl -s "https://api.github.com/repos/etcd-io/etcd/releases" | jq --raw-output 'map(select(.prerelease == false)) | .[0].name')\"" {} \;
+
+      - name: Commit and push changes
+        run: |
+          (
+          git config --local user.name 'github-actions' && \
+          git config --local user.email 'github-actions@github.com' && \
+          git add $(find . -type f -name "etcd.yaml") && \
+          git commit -m 'Etcd update' && \
+          git push ) || \
+          echo "nothing to update"
