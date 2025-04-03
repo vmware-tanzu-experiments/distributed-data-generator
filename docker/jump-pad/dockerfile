@@ -7,5 +7,5 @@ RUN yum install -y jq
 RUN mkdir -p /usr/local/bin
 COPY usr/local/bin /usr/local/bin
 RUN chmod +x /usr/local/bin/*
-CMD /bin/bash -c -- "while true; do sleep 30; done;" 
+CMD ["/bin/bash", "-c", "--", "while true; do sleep 30; done;"]
 
