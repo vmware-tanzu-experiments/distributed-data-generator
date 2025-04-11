@@ -23,7 +23,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.name
-        image: gcr.io/velero-gcp/kibishii-worker:multi-arch-36acba8-03.Apr.2025.07.01.54
+        image: gcr.io/velero-gcp/kibishii-worker:multi-arch-7414d31-29.Apr.2025.09.52.18
         volumeMounts:
         - name: kibishii-data
           mountPath: /data
