@@ -7,4 +7,4 @@ FROM eclipse-temurin:8-jre-nanoserver-ltsc2022
 ADD opt/share/kibishii "C:\Users\ContainerUser"
 
 # Add Java binary directory into the PATH.
-ENV PATH="C:\\openjdk-8\\bin;%PATH%"
+ENV PATH="C:\\openjdk-8\\bin;C:\\Windows\\system32;C:\\Windows;"

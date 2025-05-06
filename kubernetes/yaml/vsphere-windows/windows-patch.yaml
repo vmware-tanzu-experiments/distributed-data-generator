@@ -5,14 +5,19 @@ metadata:
 spec:
   template:
     spec:
-      tolerations:
-      - effect: NoSchedule
-        key: os
-        operator: Equal
-        value: windows
+      securityContext:
+        windowsOptions:
+          runAsUserName: "ContainerAdministrator"
       nodeSelector:
-        kubernetes.io/os: windows
+        "kubernetes.io/os": "windows"
+      tolerations:
+      - effect: "NoSchedule"
+        key: "os"
+        operator: "Equal"
+        value: "windows"
       containers:
       - name: kibishii
         command: ["cmd.exe", "/c"]
-        args: ["java -cp \"C:=\\Users\\ContainerUser\\*\" -jar C:\\Users\\ContainerUser\\kibishii.jar %POD_NAME% http://etcd-client:2379 C:\\Windows\\Temp"]
+        args: ["java -cp \"C:=\\Users\\ContainerUser\\*\" -jar C:\\Users\\ContainerUser\\kibishii.jar %POD_NAME% http://etcd-client:2379 C:\\data"]
+        securityContext:
+          runAsNonRoot: false
