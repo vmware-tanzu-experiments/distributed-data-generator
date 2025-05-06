@@ -43,6 +43,9 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicLong;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.MemoryType;
 
 
 
@@ -171,6 +174,12 @@ public class DirectMemoryUtils {
 	
 	public static long getDirectMemorySize() 
 	{
-		return sun.misc.VM.maxDirectMemory();
+		for (MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+            if (pool.getType() == MemoryType.NON_HEAP && pool.getName().contains("Direct")) {
+                return pool.getUsage().getMax();
+            }
+        }
+
+		return -1;
 	}
 }
