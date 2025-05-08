@@ -4,7 +4,7 @@ FROM eclipse-temurin:8-jre-nanoserver-ltsc2022
 # it's not possible to do the user mapping between the host and the container,
 # As a result, the build process always fail to find user, e.g. ContainerUser.
 # So this dockerfile can only utilize existing directories in the container.
-ADD opt/share/kibishii "C:\Users\ContainerUser"
+ADD opt/share/kibishii "C:\\Users\\ContainerUser"
 
 # Add Java binary directory into the PATH.
 ENV PATH="C:\\openjdk-8\\bin;C:\\Windows\\system32;C:\\Windows;"

@@ -17,6 +17,7 @@ spec:
         value: "windows"
       containers:
       - name: kibishii
+        image: ${VSPHERE_KIBISHII_WORKER}
         command: ["cmd.exe", "/c"]
         args: ["java -cp \"C:=\\Users\\ContainerUser\\*\" -jar C:\\Users\\ContainerUser\\kibishii.jar %POD_NAME% http://etcd-client:2379 C:\\data"]
         securityContext:

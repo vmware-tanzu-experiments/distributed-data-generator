@@ -1,1 +1,4 @@
 .vscode/*
+target/*
+kubernetes/yaml/vsphere/*-image-patch.yaml
+kubernetes/yaml/vsphere-windows/*-image-patch.yaml

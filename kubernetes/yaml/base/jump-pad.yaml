@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: jump-pad
-    image: gcr.io/velero-gcp/jump-pad:fix-cve-2023-33201-6fe3ba4-26.Sep.2023.04.06.22
+    image: velerobot4/jump-pad:main-362c5ab-07.05.2025.11.09.14
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:

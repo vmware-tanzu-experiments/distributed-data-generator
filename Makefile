@@ -16,13 +16,11 @@
 # VERSION is <git branch>-<git commit>-<date
 # Uses ifndef instead of ?= so that date will only be evaluated once, not each time VERSION is used
 ifndef VERSION
-VERSION := $(shell echo `git rev-parse --abbrev-ref HEAD`-`git log -1 --pretty=format:%h`-`date "+%d.%b.%Y.%H.%M.%S"`)
+VERSION := $(shell echo `git rev-parse --abbrev-ref HEAD`-`git log -1 --pretty=format:%h`-`date "+%d.%m.%Y.%H.%M.%S"`)
 endif
 
-# Please reference links below to log in to gcloud before pushing image to GCR
-# https://cloud.google.com/container-registry/docs/advanced-authentication#gcloud-helper
-# https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-console
-REGISTRY ?= gcr.io/velero-gcp
+# velerobot4 is the Docker Hub account used by Velero to upload images.
+REGISTRY ?= velerobot4
 
 JUMP_PAD_IMAGE = $(REGISTRY)/jump-pad
 WORKER_IMAGE = $(REGISTRY)/kibishii-worker
