@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
   - ../base
   - kibishiiAzureStorageClass.yaml
+patches:
+  - path: worker-image-patch.yaml
+  - path: jump-pad-image-patch.yaml
+  - path: etcd-image-patch.yaml
